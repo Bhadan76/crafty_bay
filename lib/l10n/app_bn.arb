@@ -1,0 +1,23 @@
+{
+ "version" : "সংস্করণ",
+ "welcome_back" : "আবার স্বাগতম",
+ "enter_your_email_and_password" : "আপনার ইমেইল ও পাসওয়ার্ড লিখুন",
+ "email" : "ইমেল",
+ "password" : "পাসওয়ার্ড",
+ "sign_in" : "সাইন ইন",
+ "sign_up" : "সাইন আপ ",
+ "register_your_account" : "অ্যাকাউন্ট নিবন্ধন করুন",
+ "get_started_with_your_details" : "আপনার বিবরণ দিয়ে শুরু করুন",
+ "first_name": "প্রথম নাম",
+ "last_name": "শেষ নাম",
+ "phone" : "ফোন",
+ "delivery_address": "ডেলিভারি ঠিকানা",
+ "dont_have_an_account" : "আপনার কি অ্যাকাউন্ট নেই?",
+ "already_have_an_account" : "আপনার কি ইতিমধ্যেই অ্যাকাউন্ট আছে?",
+ "enter_otp_code" : "ওটিপি কোড প্রবেশ করান",
+  "a_4_digit_code_has_been_sent" : "একটি ৪-সংখ্যার কোড পাঠানো হয়েছে।",
+  "next": "পরবর্তী",
+  "this_code_will_expire_in" : "কোডটির মেয়াদ শেষ হবে",
+  "s" : "সে.",
+  "resend_code" : "কোড পুনরায় পাঠান"
+}

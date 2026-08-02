@@ -1,0 +1,170 @@
+{
+  "project_info": {
+    "project_number": "876119500188",
+    "project_id": "app-manage-2f6e0",
+    "storage_bucket": "app-manage-2f6e0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876119500188:android:48b7093333421d7a9b9459",
+        "android_client_info": {
+          "package_name": "com.example.crafty_bay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWRIwYHs2yvT4j9LMbxUHQBDXY76bJ72o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876119500188-9rjiq3tguo3hkbosndt7jran6s2o5q56.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paypalUiApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876119500188:android:559d890bfc54b9be9b9459",
+        "android_client_info": {
+          "package_name": "com.example.e_commerce_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWRIwYHs2yvT4j9LMbxUHQBDXY76bJ72o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876119500188-9rjiq3tguo3hkbosndt7jran6s2o5q56.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paypalUiApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876119500188:android:f7b7b5e557d3e2ec9b9459",
+        "android_client_info": {
+          "package_name": "com.example.live_score_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876119500188-q0j540lc3rb6v17rueds4mp89ij5qlc1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.live_score_app",
+            "certificate_hash": "ce1d7c90a000c833c8d504051dff769fa82c859d"
+          }
+        },
+        {
+          "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWRIwYHs2yvT4j9LMbxUHQBDXY76bJ72o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876119500188-9rjiq3tguo3hkbosndt7jran6s2o5q56.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paypalUiApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876119500188:android:5b298b8eade2ca8f9b9459",
+        "android_client_info": {
+          "package_name": "com.example.paypal_ui_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876119500188-51jiic0ad4qmtrcg0t54ff4kvo9rt86n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.paypal_ui_app",
+            "certificate_hash": "ce1d7c90a000c833c8d504051dff769fa82c859d"
+          }
+        },
+        {
+          "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWRIwYHs2yvT4j9LMbxUHQBDXY76bJ72o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "876119500188-9rjiq3tguo3hkbosndt7jran6s2o5q56.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paypalUiApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,126 @@
+
+import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../../../../app/app_colors.dart';
+import '../../../../core/extensions/localization_extension.dart';
+import '../widget/app_logo_widget.dart';
+
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
+  static const String name = '/sign-in';
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    return Scaffold(
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: <Widget>[
+                const SizedBox(height: 100),
+                app_logo_widget(),
+                const SizedBox(height: 24),
+                Text(
+                  context.localization.welcome_back,
+                  style: textTheme.titleLarge,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  context.localization.enter_your_email_and_password,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    hintText: context.localization.email,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _passwordController,
+                  textInputAction: TextInputAction.next,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: context.localization.password,
+                    suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    // FirebaseCrashlytics.instance.log('Entered sign in button');
+                    // throw Exception('Something went wrong');
+                  },
+                  child: Text(context.localization.sign_in),
+                ),
+                const SizedBox(height: 24),
+                RichText(
+                  text: TextSpan(
+                    text: context.localization.dont_have_an_account,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: context.localization.sign_up,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                        recognizer: TapGestureRecognizer()..onTap = _onTapSignUp,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: .center,
+                  children: [
+                    IconButton(onPressed: () {}, icon:(SvgPicture.asset('assets/icons/google.svg'))),
+                    IconButton(onPressed: () {}, icon: SvgPicture.asset('assets/icons/facebook.svg')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  void _onTapSignUp() {
+    Get.toNamed(SignUpScreen.name);
+  }
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+}
+
+
