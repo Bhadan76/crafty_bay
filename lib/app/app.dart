@@ -8,6 +8,7 @@ import '../l10n/app_localizations.dart';
 import 'app_colors.dart';
 import 'app_routes.dart';
 import 'app_theme.dart';
+import 'controller_binder.dart';
 
 class CraftyBayApp extends StatefulWidget {
   const CraftyBayApp({super.key});
@@ -21,6 +22,7 @@ class _CraftyBayAppState extends State<CraftyBayApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      initialBinding: ControllerBinder(),
       title: 'Crafty Bay',
       //route
       initialRoute: SplashScreen.name,
