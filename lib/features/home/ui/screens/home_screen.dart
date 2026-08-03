@@ -9,7 +9,7 @@ import '../../../common/controller/main_bottom_nav_bar_controller.dart';
 import '../widget/app_bar_action_button.dart';
 import '../../../common/ui/widget/category_item.dart';
 import '../widget/home_carousel_slider.dart';
-import '../widget/product_card.dart';
+import '../../../common/ui/widget/product_card.dart';
 import '../widget/selection_header.dart';
 
 class HomeScreen extends StatefulWidget {

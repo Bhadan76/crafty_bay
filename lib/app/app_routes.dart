@@ -1,3 +1,5 @@
+import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
+import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
 
 import '../features/auth/ui/screens/otpVerify_screen.dart';
@@ -20,6 +22,11 @@ class AppRoutes {
       route = const OtpVerifyScreen();
     }else if(settings.name == MainBottomNavBarScreen.name){
       route = const MainBottomNavBarScreen();
+    }else if(settings.name == ProductList.name){
+      final caregory = settings.arguments as String;
+      route = ProductList(Caregory: caregory);
+    }else if(settings.name == ProductListDetails.name){
+      route = const ProductListDetails();
     }
     return MaterialPageRoute(builder: (ctx)=> route);
   }

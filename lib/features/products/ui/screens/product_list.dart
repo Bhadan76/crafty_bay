@@ -1,19 +1,21 @@
 import 'package:crafty_bay/features/common/ui/widget/product_card.dart';
 import 'package:flutter/material.dart';
 
-class WishListScreen extends StatefulWidget {
-  const WishListScreen({super.key});
+class ProductList extends StatefulWidget {
+  const ProductList({super.key, required this.Caregory});
 
+  final String Caregory;
+  static const String name = '/products';
 
   @override
-  State<WishListScreen> createState() => _WishListScreenState();
+  State<ProductList> createState() => _ProductListState();
 }
 
-class _WishListScreenState extends State<WishListScreen> {
+class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Wish List',style: TextStyle(fontWeight: FontWeight.bold),)),
+      appBar: AppBar(title: Text(widget.Caregory)),
       body: GridView.builder(
         itemCount: 30,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -22,7 +24,7 @@ class _WishListScreenState extends State<WishListScreen> {
           crossAxisSpacing: 0,
         ),
         itemBuilder: (context, index) {
-          return FittedBox(child: ProductCard());
+          return const FittedBox(child: ProductCard());
         },
       ),
     );
