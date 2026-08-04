@@ -4,6 +4,10 @@ import 'package:crafty_bay/features/products/widget/increment_decrement_count_wi
 import 'package:crafty_bay/features/products/widget/product_details_carousel_slider.dart';
 import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+
+import '../../../cart/ui/screens/cart_screen.dart';
 
 class ProductListDetails extends StatefulWidget {
   const ProductListDetails({super.key});
@@ -21,7 +25,10 @@ class _ProductListDetailsState extends State<ProductListDetails> {
       appBar: AppBar(title: Text('Product Details')),
       body: SingleChildScrollView(
         child: Column(
-          children: [ProductDetailsCarouselSlider(), _buildProductDetails()],
+          children: [
+            ProductDetailsCarouselSlider(),
+            _buildProductDetails(),
+          ],
         ),
       ),
       bottomNavigationBar: _buildPriceAndAddToCartSection(),
@@ -146,7 +153,9 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           SizedBox(
             width: 140,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+
+              },
               child: const Text('Add to Cart'),
             ),
           ),

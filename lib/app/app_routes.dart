@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import '../features/auth/ui/screens/sign_in_screen.dart';
 import '../features/auth/ui/screens/sign_up_screen.dart';
 import '../features/auth/ui/screens/splash_screen.dart';
 import '../features/common/ui/screens/main_bottom_nav_bar_screen.dart';
+import '../features/reviews/ui/screen/create_reviews_screen.dart';
+import '../features/reviews/ui/screen/reviews_screen.dart';
 
 class AppRoutes {
   static Route<dynamic> routes(RouteSettings settings){
@@ -27,6 +30,10 @@ class AppRoutes {
       route = ProductList(Caregory: caregory);
     }else if(settings.name == ProductListDetails.name){
       route = const ProductListDetails();
+    }else if(settings.name == ReviewsScreen.name){
+      route = const ReviewsScreen();
+    }else if(settings.name == CreateReviewsScreen.name){
+      route = const CreateReviewsScreen();
     }
     return MaterialPageRoute(builder: (ctx)=> route);
   }

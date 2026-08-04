@@ -1,5 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:crafty_bay/app/app_colors.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
