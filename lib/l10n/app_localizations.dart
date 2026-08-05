@@ -223,6 +223,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resend Code'**
   String get resend_code;
+
+  /// No description provided for @write_review.
+  ///
+  /// In en, this message translates to:
+  /// **'Write Review'**
+  String get write_review;
 }
 
 class _AppLocalizationsDelegate

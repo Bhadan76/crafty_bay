@@ -71,4 +71,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get resend_code => 'কোড পুনরায় পাঠান';
+
+  @override
+  String get write_review => 'Write Review';
 }

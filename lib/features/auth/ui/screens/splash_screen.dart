@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   Future<void> _moveToNextScreen() async {
     await Future.delayed(Duration(seconds: 3));
-    Get.offAllNamed(MainBottomNavBarScreen.name);
+    Get.offAllNamed(SignUpScreen.name);
   }
   @override
   Widget build(BuildContext context) {
