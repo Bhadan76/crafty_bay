@@ -1,11 +1,14 @@
 import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/features/category/ui/screens/category_list_screen.dart';
+import 'package:crafty_bay/features/home/ui/widget/home_carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/screens/home_screen.dart';
 import '../../../wish_list/ui/screens/wish_list_screen.dart';
+import '../../controllers/category_controller.dart';
 import '../../controllers/main_bottom_nav_bar_controller.dart';
+import '../../controllers/slider_controller.dart';
 
 class MainBottomNavBarScreen extends StatefulWidget {
   const MainBottomNavBarScreen({super.key});

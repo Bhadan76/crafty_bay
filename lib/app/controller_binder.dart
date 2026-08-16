@@ -1,4 +1,5 @@
 import 'package:crafty_bay/core/network_caller/network_caller.dart';
+import 'package:crafty_bay/features/common/controllers/category_controller.dart';
 import 'package:crafty_bay/features/common/controllers/slider_controller.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +13,7 @@ class ControllerBinder extends Bindings{
   @override
   void dependencies() {
     Get.put(MainBottomNavBarController());
+    Get.put(CategoryController());
     Get.put(NetworkCaller());
     Get.put(AuthController());
     Get.put(SliderController());

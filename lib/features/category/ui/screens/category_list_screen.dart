@@ -1,7 +1,10 @@
+import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
+import 'package:crafty_bay/features/common/controllers/category_controller.dart';
 import 'package:crafty_bay/features/common/ui/widget/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 
@@ -13,6 +16,18 @@ class CategoryListScreen extends StatefulWidget {
 }
 
 class _CategoryListScreenState extends State<CategoryListScreen> {
+  final CategoryController categoryController = Get.find<CategoryController>();
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+   _scrollController.addListener(_loadMoreData);
+  }
+  void _loadMoreData(){
+    if(_scrollController.position.extentAfter < 300){
+       categoryController.getCategoryList();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -30,18 +45,35 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.builder(
-            itemCount: 15,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 16,
-            ),
-            itemBuilder: (context, index) {
-              return FittedBox(child: CategoryItem());
-            },
-          ),
+        body: GetBuilder<CategoryController>(
+          builder: (controller) {
+            if(controller.isInitialLoading){
+              return CenterCircularProgressIndicator();
+            }
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount:controller.categoryList.length,
+                      controller: _scrollController,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemBuilder: (context, index) {
+                        return FittedBox(child: CategoryItem(categoryModel: controller.categoryList[index],));
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: controller.isLoading,
+                  child: LinearProgressIndicator())
+                ],
+              ),
+            );
+          }
         ),
       ),
     );

@@ -49,9 +49,9 @@ class NetworkCaller {
 
   // ================= GET =================
 
-  Future<NetworkResponse> getRequest({required String url}) async {
+  Future<NetworkResponse> getRequest({required String url, Map<String, dynamic>? queryParameters}) async {
     try {
-      final Response response = await _dio.get(url);
+      final Response response = await _dio.get(url, queryParameters: queryParameters);
       _logResponse(response.statusCode ?? 0, response);
 
       return NetworkResponse(

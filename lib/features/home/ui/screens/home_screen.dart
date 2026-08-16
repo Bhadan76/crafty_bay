@@ -1,8 +1,12 @@
 
+import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
+import 'package:crafty_bay/features/common/controllers/category_controller.dart';
+import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import '../../../../app/assets_path.dart';
 import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 import '../../../common/controllers/slider_controller.dart';
@@ -25,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<SliderController>().getSlider();
+      Get.find<CategoryController>().getCategoryList();
     });
   }
 
@@ -67,17 +72,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCategorySection() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          CategoryItem(),
-          CategoryItem(),
-          CategoryItem(),
-          CategoryItem(),
-          CategoryItem(),
-        ],
-      ),
+    return GetBuilder<CategoryController>(
+      builder: (controller) {
+        if(controller.isInitialLoading){
+          return SizedBox(
+            height: 100,
+              child: CenterCircularProgressIndicator());
+        }
+        List<CategoryModel> list = controller.categoryList.length>5 ? controller.categoryList.sublist(0 , 5) : controller.categoryList;
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: list.map((e){
+              return CategoryItem(categoryModel: e);
+          }).toList(),
+          ),
+        );
+      }
     );
   }
 
