@@ -1,14 +1,15 @@
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/auth/data/models/sign_up_model.dart';
+import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../core/extensions/localization_extension.dart';
 import '../../../../core/widgets/show_snackbar_message.dart';
+import '../../../common/ui/screens/main_bottom_nav_bar_screen.dart';
 import '../controllers/sign_up_controller.dart';
 import '../widget/app_logo_widget.dart';
 import 'otpVerify_screen.dart';
@@ -143,8 +144,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   suffixIcon: Icon(Icons.remove_red_eye_outlined),
                 ),
                 validator: (String? value) {
-                  if (value?.isEmpty ?? 0 <= 6) {
-                    return 'Enter your password';
+                  if ((value?.length ?? 0) < 6) {
+                    return 'Password must be at least 6 characters';
                   }
                   return null;
                 },
@@ -215,22 +216,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> signUp() async {
     SignUpModel signUpModel = SignUpModel(firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        phone: _phoneController.text.trim(),
+        mobile: _phoneController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        address: _addressController.text.trim()
+        address: _addressController.text.trim(),
     );
     final bool isSuccess = await signUpController.signUp(signUpModel);
     if(isSuccess){
+      String email =_emailController.text.trim();
       _cleanFormFields();
-      Get.offAllNamed(OtpVerifyScreen.name);
+      Get.offAllNamed(OtpVerifyScreen.name , arguments: email);
     }else{
-      ShowSnackBarMessage(signUpController.errorMessage!,true);
+      ShowSnackBarMessage(signUpController.errorMessage ?? 'Registration failed', true);
      }
   }
 
   void _onTapSignInButton() {
-    Get.back();
+    Get.toNamed(SignInScreen.name);
   }
   void _cleanFormFields() {
     _emailController.clear();

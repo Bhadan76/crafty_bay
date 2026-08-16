@@ -15,7 +15,7 @@
  "dont_have_an_account" : "আপনার কি অ্যাকাউন্ট নেই?",
  "already_have_an_account" : "আপনার কি ইতিমধ্যেই অ্যাকাউন্ট আছে?",
  "enter_otp_code" : "ওটিপি কোড প্রবেশ করান",
-  "a_4_digit_code_has_been_sent" : "একটি ৪-সংখ্যার কোড পাঠানো হয়েছে।",
+  "a_4_digit_code_has_been_sent" : "একটি 6-সংখ্যার কোড পাঠানো হয়েছে।",
   "next": "পরবর্তী",
   "this_code_will_expire_in" : "কোডটির মেয়াদ শেষ হবে",
   "s" : "সে.",

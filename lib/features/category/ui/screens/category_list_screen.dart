@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 
-import '../../../common/controller/main_bottom_nav_bar_controller.dart';
+import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 
 class CategoryListScreen extends StatefulWidget {
   const CategoryListScreen({super.key});

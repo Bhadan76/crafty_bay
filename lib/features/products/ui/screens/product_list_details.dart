@@ -4,15 +4,12 @@ import 'package:crafty_bay/features/products/widget/increment_decrement_count_wi
 import 'package:crafty_bay/features/products/widget/product_details_carousel_slider.dart';
 import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
-import '../../../cart/ui/screens/cart_screen.dart';
 
 class ProductListDetails extends StatefulWidget {
   const ProductListDetails({super.key});
 
-  static final String name = '/Product-details';
+  static const String name = '/product-details';
 
   @override
   State<ProductListDetails> createState() => _ProductListDetailsState();

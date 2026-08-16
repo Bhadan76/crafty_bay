@@ -1,13 +1,20 @@
-
+import 'package:crafty_bay/features/auth/data/models/sign_in_model.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../core/extensions/localization_extension.dart';
+import '../../../../core/widgets/show_snackbar_message.dart';
+import '../../../common/ui/screens/main_bottom_nav_bar_screen.dart';
+import '../controllers/sign_in_controller.dart';
 import '../widget/app_logo_widget.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -23,6 +30,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  SignInController signInController = Get.find<SignInController>();
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -58,6 +67,13 @@ class _SignInScreenState extends State<SignInScreen> {
                   decoration: InputDecoration(
                     hintText: context.localization.email,
                   ),
+                  validator: (String? value) {
+                    String email = value ?? '';
+                    if (!EmailValidator.validate(email)) {
+                      return 'Enter a valid email';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -68,14 +84,25 @@ class _SignInScreenState extends State<SignInScreen> {
                     hintText: context.localization.password,
                     suffixIcon: Icon(Icons.remove_red_eye_outlined),
                   ),
+                  validator: (String? value) {
+                    if ((value?.length ?? 0) < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () {
-                    // FirebaseCrashlytics.instance.log('Entered sign in button');
-                    // throw Exception('Something went wrong');
+                GetBuilder<SignInController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.inProgress == false,
+                      replacement: CircularProgressIndicator(),
+                      child: ElevatedButton(
+                        onPressed: _onTapSignInButton,
+                        child: Text(context.localization.sign_in),
+                      ),
+                    );
                   },
-                  child: Text(context.localization.sign_in),
                 ),
                 const SizedBox(height: 24),
                 RichText(
@@ -92,17 +119,25 @@ class _SignInScreenState extends State<SignInScreen> {
                           fontWeight: FontWeight.w600,
                           color: AppColors.primary,
                         ),
-                        recognizer: TapGestureRecognizer()..onTap = _onTapSignUp,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = _onTapSignUp,
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: .center,
                   children: [
-                    IconButton(onPressed: () {}, icon:(SvgPicture.asset('assets/icons/google.svg'))),
-                    IconButton(onPressed: () {}, icon: SvgPicture.asset('assets/icons/facebook.svg')),
+                    IconButton(
+                      onPressed: () {},
+                      icon: (SvgPicture.asset('assets/icons/google.svg',height: 30,width: 30)),
+                    ),
+                    const SizedBox(width: 10,),
+                    IconButton(
+                      onPressed: () {},
+                      icon: SvgPicture.asset('assets/icons/facebook.svg',height: 30,width: 30),
+                    ),
                   ],
                 ),
               ],
@@ -112,9 +147,40 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+
+  void _onTapSignInButton() {
+    if (_formKey.currentState!.validate()) {
+      signIn();
+    }
+  }
+
+  Future<void> signIn() async {
+    SignInModel signInModel = SignInModel(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
+    final bool isSuccess = await signInController.signIn(signInModel);
+    if (isSuccess) {
+      _cleanFormFields();
+      Get.offAllNamed(MainBottomNavBarScreen.name);
+    } else {
+      ShowSnackBarMessage(
+        signInController.errorMessage ?? 'Sign in failed',
+        true,
+      );
+    }
+  }
+
   void _onTapSignUp() {
     Get.toNamed(SignUpScreen.name);
   }
+
+  void _cleanFormFields() {
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -122,5 +188,3 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 }
-
-

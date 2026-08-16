@@ -2,9 +2,9 @@ import 'package:crafty_bay/features/common/ui/widget/product_card.dart';
 import 'package:flutter/material.dart';
 
 class ProductList extends StatefulWidget {
-  const ProductList({super.key, required this.Caregory});
+  const ProductList({super.key, required this.category});
 
-  final String Caregory;
+  final String category;
   static const String name = '/products';
 
   @override
@@ -15,7 +15,7 @@ class _ProductListState extends State<ProductList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.Caregory)),
+      appBar: AppBar(title: Text(widget.category)),
       body: GridView.builder(
         itemCount: 30,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

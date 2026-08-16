@@ -18,33 +18,35 @@ class _CreateReviewsScreenState extends State<CreateReviewsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                textInputAction: .next,
-                decoration: InputDecoration(
-                  hintText: context.localization.first_name,
+          child: SafeArea(
+            child: Column(
+              children: [
+                TextFormField(
+                  textInputAction: .next,
+                  decoration: InputDecoration(
+                    hintText: context.localization.first_name,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12,),
-              TextFormField(
-                textInputAction: .next,
-                decoration: InputDecoration(
-                  hintText: context.localization.last_name,
+                const SizedBox(height: 12,),
+                TextFormField(
+                  textInputAction: .next,
+                  decoration: InputDecoration(
+                    hintText: context.localization.last_name,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12,),
-              TextFormField(
-                textInputAction: .next,
-                maxLines: 8,
-                decoration: InputDecoration(
-                  hintText: 'Write Review',
+                const SizedBox(height: 12,),
+                TextFormField(
+                  textInputAction: .next,
+                  maxLines: 8,
+                  decoration: InputDecoration(
+                    hintText: 'Write Review',
+                  ),
                 ),
-              ),
-              const SizedBox(height: 50,),
-              ElevatedButton(onPressed: () {}, child: Text('Submit')),
-
-            ],
+                const SizedBox(height: 50,),
+                ElevatedButton(onPressed: () {}, child: Text('Submit')),
+            
+              ],
+            ),
           ),
 
         ),

@@ -15,7 +15,8 @@ class SignUpController extends GetxController{
    update();
    final NetworkResponse response = await Get.find<NetworkCaller>().postRequest(url: AppUrls.signUpUrl,body: signUpModel.toJson());
    if(response.isSuccess){
-      isSuccess = true;
+     isSuccess = true;
+     _errorMessage = null;
    }else{
      _errorMessage = response.errorMessage;
    }

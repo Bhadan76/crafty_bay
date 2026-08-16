@@ -58,7 +58,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get a_4_digit_code_has_been_sent =>
-      'একটি ৪-সংখ্যার কোড পাঠানো হয়েছে।';
+      'একটি 6-সংখ্যার কোড পাঠানো হয়েছে।';
 
   @override
   String get next => 'পরবর্তী';

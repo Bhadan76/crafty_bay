@@ -24,48 +24,46 @@ class _CraftyBayAppState extends State<CraftyBayApp> {
       debugShowCheckedModeBanner: false,
       initialBinding: ControllerBinder(),
       title: 'Crafty Bay',
-      //route
       initialRoute: SplashScreen.name,
-      onGenerateRoute: AppRoutes.routes,
-      //theme
+      getPages: AppRoutes.getPages,
       theme: ThemeData(
-        colorSchemeSeed: AppColors.primary,
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: TextTheme(
-          titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary),
+          colorSchemeSeed: AppColors.primary,
+          scaffoldBackgroundColor: Colors.white,
+          textTheme: TextTheme(
+            titleLarge: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
           ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: AppColors.primary),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
-          ),
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            fontWeight: FontWeight.w400
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            fixedSize: Size(double.maxFinite, 50),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+          inputDecorationTheme: InputDecorationTheme(
+            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary),
             ),
-            foregroundColor: Colors.white,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.red),
+            ),
+            hintStyle: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.w400
+            ),
           ),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.white,
-        )
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              fixedSize: Size(double.maxFinite, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              foregroundColor: Colors.white,
+            ),
+          ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+          )
       ),
       //light theme
       //dark theme

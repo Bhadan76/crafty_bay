@@ -1,5 +1,4 @@
 import 'package:crafty_bay/app/assets_path.dart';
-import 'package:crafty_bay/features/home/ui/screens/home_screen.dart';
 import 'package:crafty_bay/features/products/widget/increment_decrement_count_widget.dart';
 import 'package:crafty_bay/features/reviews/ui/screen/reviews_screen.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import '../../../../app/app_colors.dart';
-import '../../../common/controller/main_bottom_nav_bar_controller.dart';
+import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});

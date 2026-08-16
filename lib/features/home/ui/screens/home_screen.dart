@@ -4,7 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import '../../../../app/assets_path.dart';
-import '../../../common/controller/main_bottom_nav_bar_controller.dart';
+import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
+import '../../../common/controllers/slider_controller.dart';
 import '../widget/app_bar_action_button.dart';
 import '../../../common/ui/widget/category_item.dart';
 import '../widget/home_carousel_slider.dart';
@@ -19,6 +20,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<SliderController>().getSlider();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
