@@ -1,7 +1,6 @@
 
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/common/controllers/category_controller.dart';
-import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -74,21 +73,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCategorySection() {
     return GetBuilder<CategoryController>(
       builder: (controller) {
-        if(controller.isInitialLoading){
-          return SizedBox(
-            height: 100,
-              child: CenterCircularProgressIndicator());
+        if (controller.inProgress) {
+          return const SizedBox(
+            height: 90,
+            child: CenterCircularProgressIndicator(),
+          );
         }
-        List<CategoryModel> list = controller.categoryList.length>5 ? controller.categoryList.sublist(0 , 5) : controller.categoryList;
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: list.map((e){
-              return CategoryItem(categoryModel: e);
-          }).toList(),
+        if (controller.categoryList.isEmpty) {
+          return const SizedBox(
+            height: 90,
+            child: Center(child: Text('No categories found')),
+          );
+        }
+        return SizedBox(
+          height: 110,
+          child: ListView.builder(
+            itemCount: controller.categoryList.length > 8
+                ? 8
+                : controller.categoryList.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return CategoryItem(categoryModel: controller.categoryList[index]);
+            },
           ),
         );
-      }
+      },
     );
   }
 

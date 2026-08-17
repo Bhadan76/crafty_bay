@@ -47,33 +47,46 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
         ),
         body: GetBuilder<CategoryController>(
           builder: (controller) {
-            if(controller.isInitialLoading){
-              return CenterCircularProgressIndicator();
+            if (controller.inProgress) {
+              return const CenterCircularProgressIndicator();
             }
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
                   Expanded(
-                    child: GridView.builder(
-                      itemCount:controller.categoryList.length,
-                      controller: _scrollController,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 16,
-                      ),
-                      itemBuilder: (context, index) {
-                        return FittedBox(child: CategoryItem(categoryModel: controller.categoryList[index],));
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await controller.getCategoryList(isRefresh: true);
                       },
+                      child: GridView.builder(
+                        itemCount: controller.categoryList.length,
+                        controller: _scrollController,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 16,
+                        ),
+                        itemBuilder: (context, index) {
+                          return FittedBox(
+                            child: CategoryItem(
+                              categoryModel: controller.categoryList[index],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   Visibility(
-                    visible: controller.isLoading,
-                  child: LinearProgressIndicator())
+                    visible: controller.isLoadingMore,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: LinearProgressIndicator(),
+                    ),
+                  )
                 ],
               ),
             );
-          }
+          },
         ),
       ),
     );

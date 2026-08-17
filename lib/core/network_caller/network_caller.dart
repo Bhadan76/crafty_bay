@@ -1,4 +1,3 @@
-
 import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:dio/dio.dart';
@@ -51,6 +50,7 @@ class NetworkCaller {
 
   Future<NetworkResponse> getRequest({required String url, Map<String, dynamic>? queryParameters}) async {
     try {
+      // Dio automatically handles queryParameters correctly
       final Response response = await _dio.get(url, queryParameters: queryParameters);
       _logResponse(response.statusCode ?? 0, response);
 

@@ -8,8 +8,8 @@ class CategoryModel {
   factory CategoryModel.formJson(Map<String, dynamic> jsonData) {
     return CategoryModel(
       id: jsonData['_id'] ?? '',
-      name: jsonData['categoryName'] ?? '',
-      image: jsonData['categoryImg'] ?? '',
+      name: jsonData['name'] ?? '',
+      image: jsonData['image'] ?? '',
     );
   }
 }

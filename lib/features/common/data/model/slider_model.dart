@@ -8,7 +8,7 @@ class SliderModel {
 
   SliderModel({
     required this.id,
-    required this.image,
+    this.image,
     required this.description,
     required this.title,
     required this.price,
@@ -16,10 +16,14 @@ class SliderModel {
   });
 
   factory SliderModel.formJson(Map<String, dynamic> jsonData) {
-    
+    String? imageUrl;
+    if (jsonData['images'] != null && jsonData['images'] is List && (jsonData['images'] as List).isNotEmpty) {
+      imageUrl = jsonData['images'][0];
+    }
+
     return SliderModel(
       id: jsonData['_id'] ?? '',
-      image: jsonData['images'],
+      image: imageUrl,
       description: jsonData['description'] ?? '',
       title: jsonData['title'] ?? '',
       price: jsonData['price']?.toString() ?? '0',
@@ -27,7 +31,3 @@ class SliderModel {
     );
   }
 }
-
-
-
-
