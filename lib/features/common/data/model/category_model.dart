@@ -7,7 +7,7 @@ class CategoryModel {
 
   factory CategoryModel.formJson(Map<String, dynamic> jsonData) {
     return CategoryModel(
-      id: jsonData['_id'] ?? '',
+      id: jsonData['_id'],
       name: jsonData['name'] ?? '',
       image: jsonData['image'] ?? '',
     );

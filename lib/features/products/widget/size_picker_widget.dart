@@ -32,6 +32,7 @@ class _SizePickerWidgetState extends State<SizePickerWidget> {
                   setState(() {
                     selectedSize = color;
                   });
+                  widget.onSizeSelected(color);
                 },
                 child: Container(
                   height: 40,

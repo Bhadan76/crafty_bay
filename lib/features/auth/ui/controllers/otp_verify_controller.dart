@@ -20,7 +20,11 @@ class OtpVerifyController extends GetxController{
    final NetworkResponse response = await Get.find<NetworkCaller>().postRequest(url: AppUrls.otpVerifyUrl,body: otpVerifyModel.toJson());
    if(response.isSuccess){
       final token = response.responseData['data'];
-      await AuthController().saveAccessToken(token);
+      if (token is String) {
+        await AuthController.saveAccessToken(token);
+      } else if (token is Map && token.containsKey('token')) {
+        await AuthController.saveAccessToken(token['token']);
+      }
       isSuccess = true;
       _errorMessage = null;
    }else{

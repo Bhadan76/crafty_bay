@@ -15,10 +15,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 import 'app/app.dart';
+import 'features/auth/ui/controllers/auth_controller.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AuthController.getUserData();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

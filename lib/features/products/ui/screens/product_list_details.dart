@@ -1,13 +1,20 @@
 import 'package:crafty_bay/app/app_colors.dart';
+import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
+import 'package:crafty_bay/core/widgets/show_snackbar_message.dart';
+import 'package:crafty_bay/features/common/controllers/add_to_cart_controller.dart';
+import 'package:crafty_bay/features/products/ui/controller/product_details_controller.dart';
 import 'package:crafty_bay/features/products/widget/color_picker_widget.dart';
 import 'package:crafty_bay/features/products/widget/increment_decrement_count_widget.dart';
 import 'package:crafty_bay/features/products/widget/product_details_carousel_slider.dart';
 import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 class ProductListDetails extends StatefulWidget {
-  const ProductListDetails({super.key});
+  const ProductListDetails({super.key, required this.productId});
+
+  final String productId;
 
   static const String name = '/product-details';
 
@@ -16,23 +23,48 @@ class ProductListDetails extends StatefulWidget {
 }
 
 class _ProductListDetailsState extends State<ProductListDetails> {
+  final ProductDetailsController _productDetailsController =
+      Get.find<ProductDetailsController>();
+  final AddToCartController _addToCartController =
+      Get.find<AddToCartController>();
+  String? _selectedColor;
+  String? _selectedSize;
+
+  @override
+  void initState() {
+    super.initState();
+    _productDetailsController.getProductDetails(widget.productId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Product Details')),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProductDetailsCarouselSlider(),
-            _buildProductDetails(),
-          ],
-        ),
+      appBar: AppBar(title: const Text('Product Details')),
+      body: GetBuilder<ProductDetailsController>(
+        builder: (controller) {
+          if (controller.inProgress) {
+            return const CenterCircularProgressIndicator();
+          }
+          if (controller.errorMessage != null) {
+            return Center(child: Text(controller.errorMessage!));
+          }
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                ProductDetailsCarouselSlider(
+                  imageList: controller.product.images,
+                ),
+                _buildProductDetails(controller),
+                _buildPriceAndAddToCartSection(controller.product.sizes.isNotEmpty,controller.product.colors.isNotEmpty),
+              ],
+            ),
+          );
+        },
       ),
-      bottomNavigationBar: _buildPriceAndAddToCartSection(),
     );
   }
 
-  Widget _buildProductDetails() {
+  Widget _buildProductDetails(ProductDetailsController controller) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -42,8 +74,11 @@ class _ProductListDetailsState extends State<ProductListDetails> {
             children: [
               Expanded(
                 child: Text(
-                  'Nike 320 2025 new edition',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                  controller.product.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
                 ),
               ),
               IncrementDecrementCountWidget(
@@ -58,8 +93,8 @@ class _ProductListDetailsState extends State<ProductListDetails> {
             children: [
               Wrap(
                 children: [
-                  Icon(Icons.star, size: 18, color: Colors.orange),
-                  Text('3.5'),
+                  const Icon(Icons.star, size: 18, color: Colors.orange),
+                  Text(controller.product.rating),
                 ],
               ),
               const SizedBox(width: 10),
@@ -76,8 +111,8 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(2),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(2.0),
                   child: Icon(
                     Icons.favorite_border,
                     size: 14,
@@ -89,31 +124,37 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           ),
           const SizedBox(height: 16),
           ColorPickerWidget(
-            colors: ['red', 'blue', 'orange', 'black', 'white'],
-            onColorSelected: (String value) {
-              print(value);
+            colors: controller.product.colors,
+            onColorSelected: (String selectedColor) {
+              _selectedColor = selectedColor;
             },
           ),
           const SizedBox(height: 16),
           SizePickerWidget(
-            sizes: ['S', 'M', 'L', 'XL'],
-            onSizeSelected: (String value) {
-              print(value);
+            sizes: controller.product.sizes,
+            onSizeSelected: (String selectedSize) {
+              _selectedSize = selectedSize;
             },
           ),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'Description',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
           ),
           const SizedBox(height: 4),
-          Text('''Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.''',style: TextStyle(color: Colors.grey.shade600),)
+          Text(
+            controller.product.description,
+            style: TextStyle(color: Colors.grey.shade600),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildPriceAndAddToCartSection() {
+  Widget _buildPriceAndAddToCartSection(
+    bool isSizeAvailable,
+    bool isColorAvailable,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -150,8 +191,26 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           SizedBox(
             width: 140,
             child: ElevatedButton(
-              onPressed: () {
-
+              onPressed: () async {
+                if (isColorAvailable && _selectedColor == null) {
+                  ShowSnackBarMessage('Please select your color', true);
+                  return;
+                }
+                if (isSizeAvailable && _selectedSize == null) {
+                  ShowSnackBarMessage('Please select your size', true);
+                  return;
+                }
+                bool isSuccess = await _addToCartController.getAddToCartProduct(
+                  _productDetailsController.product.id,
+                  _selectedColor!,
+                  _selectedSize!,
+                );
+                if (isSuccess) {
+                  ShowSnackBarMessage('Product Added To Cart');
+                } else {
+                  ShowSnackBarMessage(
+                      _addToCartController.errorMessage ?? 'Something went wrong');
+                }
               },
               child: const Text('Add to Cart'),
             ),

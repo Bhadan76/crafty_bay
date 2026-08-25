@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/products/data/models/product_list_model.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -8,14 +9,15 @@ import '../../../../app/assets_path.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
-    super.key,
+    super.key,required this.productListModel,
   });
+  final ProductListModel productListModel;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(ProductListDetails.name);
+        Get.toNamed(ProductListDetails.name,arguments: productListModel.id);
       },
       child: Card(
         color: Colors.white,
@@ -33,42 +35,52 @@ class ProductCard extends StatelessWidget {
                     topRight: Radius.circular(10),
                   ),
                   image: DecorationImage(
-                    image: AssetImage(AssetsPath.dummeShoePng),
-                    fit: BoxFit.scaleDown,
+                    image: NetworkImage(productListModel.images.isNotEmpty
+                        ? productListModel.images.first
+                        : ''),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Nike NK76 - new collection',
+                      productListModel.title,
                       maxLines: 1,
-                      style: TextStyle(
+                      style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Row(
-                      mainAxisAlignment: .spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$100',
-                          style: TextStyle(
+                          '\$${productListModel.price}',
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.primary,
                           ),
                         ),
-                        Wrap(children: [Icon(Icons.star,size: 18,color: Colors.orange,), Text('3.5')]),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            const Icon(Icons.star, size: 16, color: Colors.orange),
+                            Text(productListModel.rating, style: const TextStyle(fontSize: 12)),
+                          ],
+                        ),
                         Card(
                           color: AppColors.primary,
+                          margin: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(2),
+                            borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(2.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
                             child: Icon(
                               Icons.favorite_border,
                               size: 14,

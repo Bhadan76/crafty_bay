@@ -57,7 +57,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
-                        await controller.getCategoryList(isRefresh: true);
+                        controller.refreshLoading();
                       },
                       child: GridView.builder(
                         itemCount: controller.categoryList.length,

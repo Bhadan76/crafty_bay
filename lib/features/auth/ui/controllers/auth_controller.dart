@@ -20,11 +20,10 @@ class AuthController  {
 
   }
 
-  Future<void> saveAccessToken(String t) async {
+  static Future<void> saveAccessToken(String t) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, t);
     token = t;
-
   }
 
   static Future<void> getUserData() async {

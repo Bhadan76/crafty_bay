@@ -1,24 +1,25 @@
 import 'package:crafty_bay/app/app_urls.dart';
 import 'package:crafty_bay/core/network_caller/network_caller.dart';
-import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:get/get.dart';
 
-class CategoryController extends GetxController {
+import '../../data/models/product_list_model.dart';
+
+class ProductListController extends GetxController {
   bool _inProgress = false;
   bool _isLoadingMore = false;
   final int _countData =10;
   int _currentPage = 1;
   int? _totalPages;
-  
+
   String? _errorMessage;
-  List<CategoryModel> _categoryList = [];
+  final List<ProductListModel> _productList = [];
 
   bool get inProgress => _inProgress;
   bool get isLoadingMore => _isLoadingMore;
   String? get errorMessage => _errorMessage;
-  List<CategoryModel> get categoryList => _categoryList;
+  List<ProductListModel> get productList => _productList;
 
-  Future<bool> getCategoryList() async {
+  Future<bool> getProductListCategory(String categoryId) async {
 
     // Stop if we already loaded all pages
     if (_totalPages != null && _currentPage > _totalPages!) {
@@ -30,16 +31,17 @@ class CategoryController extends GetxController {
 
     if (_currentPage == 1) {
       _inProgress = true;
+      _productList.clear(); // নতুন ক্যাটাগরি লোড করার আগে আগের ডাটা ক্লিয়ার করা হচ্ছে
     } else {
       _isLoadingMore = true;
     }
     update();
 
     final NetworkResponse response = await Get.find<NetworkCaller>().getRequest(
-      url: AppUrls.categoryUrl,
+      url: AppUrls.productListUrl(categoryId),
       queryParameters: {
         'page': _currentPage,
-        'count': _countData, // Adjust count as per your API requirement
+        'count': _countData,
       },
     );
 
@@ -48,7 +50,7 @@ class CategoryController extends GetxController {
       final data = response.responseData;
       if (data != null && data['data'] != null) {
         for (Map<String, dynamic> item in data['data']) {
-          _categoryList.add(CategoryModel.formJson(item));
+          _productList.add(ProductListModel.formJson(item));
         }
         // Parsing pagination data
         if (data['pagination'] != null) {
@@ -67,10 +69,10 @@ class CategoryController extends GetxController {
     update();
     return isSuccess;
   }
-  Future<bool> refreshLoading(){
+  Future<bool> refreshLoading(String categoryId){
     _currentPage = 1;
-    _categoryList.clear();
+    _productList.clear();
     _totalPages = null;
-    return getCategoryList();
+    return getProductListCategory(categoryId);
   }
 }

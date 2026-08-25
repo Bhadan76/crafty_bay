@@ -1,6 +1,7 @@
 
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/common/controllers/category_controller.dart';
+import 'package:crafty_bay/features/products/ui/controller/product_by_remark_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -29,6 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Get.find<SliderController>().getSlider();
       Get.find<CategoryController>().getCategoryList();
+      Get.find<ProductByRemarkController>().getProductByRemark('popular');
+      Get.find<ProductByRemarkController>().getProductByRemark('special');
+      Get.find<ProductByRemarkController>().getProductByRemark('new');
     });
   }
 
@@ -53,21 +57,53 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               SelectionHeader(name: 'Popular', onPressed: () {}),
               const SizedBox(height: 16),
-              _buildProductSection(),
+              _buildProductSectionByRemark('popular'),
               const SizedBox(height: 16),
               SelectionHeader(name: 'Special', onPressed: () {}),
               const SizedBox(height: 16),
-              _buildProductSection(),
+              _buildProductSectionByRemark('special'),
               const SizedBox(height: 16),
               SelectionHeader(name: 'New', onPressed: () {}),
               const SizedBox(height: 16),
-              _buildProductSection(),
-
+              _buildProductSectionByRemark('new'),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildProductSectionByRemark(String remark) {
+    return GetBuilder<ProductByRemarkController>(builder: (controller) {
+      if (controller.inProgress(remark)) {
+        return const SizedBox(
+          height: 100,
+          child: CenterCircularProgressIndicator(),
+        );
+      }
+
+      final products = remark == 'popular'
+          ? controller.popularProducts
+          : remark == 'special'
+              ? controller.specialProducts
+              : controller.newProducts;
+
+      if (products.isEmpty) {
+        return const SizedBox(
+          height: 100,
+          child: Center(child: Text('No products found')),
+        );
+      }
+
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: products.map((e) {
+            return ProductCard(productListModel: e);
+          }).toList(),
+        ),
+      );
+    });
   }
 
   Widget _buildCategorySection() {
@@ -88,8 +124,8 @@ class _HomeScreenState extends State<HomeScreen> {
         return SizedBox(
           height: 110,
           child: ListView.builder(
-            itemCount: controller.categoryList.length > 8
-                ? 8
+            itemCount: controller.categoryList.length > 6
+                ? 6
                 : controller.categoryList.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
@@ -98,21 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildProductSection() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          ProductCard(),
-          ProductCard(),
-          ProductCard(),
-          ProductCard(),
-          ProductCard(),
-        ],
-      ),
     );
   }
 

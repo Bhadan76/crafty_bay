@@ -1,4 +1,4 @@
-import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
+import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
@@ -29,11 +29,20 @@ class AppRoutes {
     GetPage(
       name: ProductList.name,
       page: () {
-        final String category = Get.arguments ?? '';
-        return ProductList(category: category);
+        final CategoryModel category = Get.arguments as CategoryModel;
+        return ProductList(
+          categoryId: category.id,
+          categoryName: category.name,
+        );
       },
     ),
-    GetPage(name: ProductListDetails.name, page: () => const ProductListDetails()),
+    GetPage(
+        name: ProductListDetails.name,
+        page: () {
+        final String productId =  Get.arguments as String;
+          return ProductListDetails(productId: productId,);
+        }
+    ),
     GetPage(name: ReviewsScreen.name, page: () => const ReviewsScreen()),
     GetPage(name: CreateReviewsScreen.name, page: () => const CreateReviewsScreen()),
   ];
@@ -53,10 +62,14 @@ class AppRoutes {
     } else if (settings.name == MainBottomNavBarScreen.name) {
       route = const MainBottomNavBarScreen();
     } else if (settings.name == ProductList.name) {
-      final String category = (settings.arguments is String) ? settings.arguments as String : '';
-      route = ProductList(category: category);
+      final CategoryModel category = settings.arguments as CategoryModel;
+      route = ProductList(
+        categoryId: category.id,
+        categoryName: category.name,
+      );
     } else if (settings.name == ProductListDetails.name) {
-      route = const ProductListDetails();
+      final String productId = (settings.arguments is String) ? settings.arguments as String : '';
+      route = ProductListDetails(productId: productId,);
     } else if (settings.name == ReviewsScreen.name) {
       route = const ReviewsScreen();
     } else if (settings.name == CreateReviewsScreen.name) {
@@ -72,6 +85,7 @@ class AppRoutes {
     return MaterialPageRoute(builder: (ctx) => route);
   }
 }
+
 
 
 
