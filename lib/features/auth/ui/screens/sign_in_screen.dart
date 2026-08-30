@@ -130,8 +130,8 @@ class _SignInScreenState extends State<SignInScreen> {
                   mainAxisAlignment: .center,
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: (SvgPicture.asset('assets/icons/google.svg',height: 30,width: 30)),
+                      onPressed: _onTapGoogleSignIn,
+                      icon: SvgPicture.asset('assets/icons/google.svg', height: 30, width: 30),
                     ),
                     const SizedBox(width: 10,),
                     IconButton(
@@ -152,6 +152,36 @@ class _SignInScreenState extends State<SignInScreen> {
   void _onTapSignInButton() {
     if (_formKey.currentState!.validate()) {
       signIn();
+    }
+  }
+
+  Future<void> _onTapGoogleSignIn() async {
+    try {
+      await GoogleSignIn.instance.initialize(
+        serverClientId:
+            '876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com',
+      );
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      if (googleUser == null) {
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (userCredential.user != null && mounted) {
+        Get.offAllNamed(MainBottomNavBarScreen.name);
+      }
+    } catch (e, stack) {
+      debugPrint('Google Sign-In Error: $e');
+      debugPrint('Stack trace: $stack');
+      if (mounted) {
+        ShowSnackBarMessage('Google Sign-In failed: ${e.toString()}', true);
+      }
     }
   }
 

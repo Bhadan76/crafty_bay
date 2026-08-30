@@ -8,6 +8,7 @@ import 'package:crafty_bay/features/products/widget/increment_decrement_count_wi
 import 'package:crafty_bay/features/products/widget/product_details_carousel_slider.dart';
 import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
@@ -55,6 +56,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                   imageList: controller.product.images,
                 ),
                 _buildProductDetails(controller),
+                SizedBox(height: 100.h,),
                 _buildPriceAndAddToCartSection(controller.product.sizes.isNotEmpty,controller.product.colors.isNotEmpty),
               ],
             ),
@@ -190,29 +192,39 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           ),
           SizedBox(
             width: 140,
-            child: ElevatedButton(
-              onPressed: () async {
-                if (isColorAvailable && _selectedColor == null) {
-                  ShowSnackBarMessage('Please select your color', true);
-                  return;
-                }
-                if (isSizeAvailable && _selectedSize == null) {
-                  ShowSnackBarMessage('Please select your size', true);
-                  return;
-                }
-                bool isSuccess = await _addToCartController.getAddToCartProduct(
-                  _productDetailsController.product.id,
-                  _selectedColor!,
-                  _selectedSize!,
+            child: GetBuilder<AddToCartController>(
+              init: _addToCartController,
+              builder: (controller) {
+                return Visibility(
+                  visible:controller.inProgress == false,
+                  replacement: CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (isColorAvailable && _selectedColor == null) {
+                        ShowSnackBarMessage('Please select your color', true);
+                        return;
+                      }
+                      if (isSizeAvailable && _selectedSize == null) {
+                        ShowSnackBarMessage('Please select your size', true);
+                        return;
+                      }
+
+                      bool isSuccess = await _addToCartController.getAddToCartProduct(
+                        _productDetailsController.product.id,
+                        _selectedColor!,
+                        _selectedSize!,
+                      );
+                      if (isSuccess) {
+                        ShowSnackBarMessage('Product Added To Cart');
+                      } else {
+                        ShowSnackBarMessage(
+                            _addToCartController.errorMessage ?? 'Something went wrong');
+                      }
+                    },
+                    child: const Text('Add to Cart'),
+                  ),
                 );
-                if (isSuccess) {
-                  ShowSnackBarMessage('Product Added To Cart');
-                } else {
-                  ShowSnackBarMessage(
-                      _addToCartController.errorMessage ?? 'Something went wrong');
-                }
-              },
-              child: const Text('Add to Cart'),
+              }
             ),
           ),
         ],

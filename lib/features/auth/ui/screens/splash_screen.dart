@@ -1,6 +1,7 @@
 import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_bar_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
