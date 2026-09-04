@@ -1,11 +1,10 @@
-import 'package:crafty_bay/features/products/data/models/product_list_model.dart';
+import 'package:crafty_bay/features/common/data/model/product_list_model.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import '../../../../app/app_colors.dart';
-import '../../../../app/assets_path.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({

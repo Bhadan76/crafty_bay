@@ -24,17 +24,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<SliderController>().getSlider();
-      Get.find<CategoryController>().getCategoryList();
-      Get.find<ProductByRemarkController>().getProductByRemark('popular');
-      Get.find<ProductByRemarkController>().getProductByRemark('special');
-      Get.find<ProductByRemarkController>().getProductByRemark('new');
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {

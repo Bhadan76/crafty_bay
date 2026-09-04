@@ -11,8 +11,8 @@ class NetworkCaller {
   final Logger _logger = Logger();
   final Dio _dio = Dio(
     BaseOptions(
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      connectTimeout: const Duration(seconds: 90),
+      receiveTimeout: const Duration(seconds: 90),
     ),
   );
 
@@ -91,6 +91,108 @@ class NetworkCaller {
   }) async {
     try {
       final Response response = await _dio.post(url, data: body);
+      _logResponse(response.statusCode ?? 0, response);
+
+      return NetworkResponse(
+        isSuccess: true,
+        responseData: response.data,
+        responseCode: response.statusCode!,
+        errorMessage: (response.data is Map) ? response.data['message'] : null,
+      );
+    } on DioException catch (e) {
+      _logger.e(e.toString());
+
+      String? errorMessage;
+      if (e.response?.data is Map) {
+        errorMessage = e.response?.data['message'];
+      }
+
+      return NetworkResponse(
+        isSuccess: false,
+        responseData: e.response?.data,
+        responseCode: e.response?.statusCode ?? -1,
+        errorMessage: errorMessage ?? e.message ?? 'Something went wrong',
+      );
+    }
+  }
+
+  // ================= PUT =================
+
+  Future<NetworkResponse> putRequest({
+    required String url,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      final Response response = await _dio.put(url, data: body);
+      _logResponse(response.statusCode ?? 0, response);
+
+      return NetworkResponse(
+        isSuccess: true,
+        responseData: response.data,
+        responseCode: response.statusCode!,
+        errorMessage: (response.data is Map) ? response.data['message'] : null,
+      );
+    } on DioException catch (e) {
+      _logger.e(e.toString());
+
+      String? errorMessage;
+      if (e.response?.data is Map) {
+        errorMessage = e.response?.data['message'];
+      }
+
+      return NetworkResponse(
+        isSuccess: false,
+        responseData: e.response?.data,
+        responseCode: e.response?.statusCode ?? -1,
+        errorMessage: errorMessage ?? e.message ?? 'Something went wrong',
+      );
+    }
+  }
+
+  // ================= PATCH =================
+
+  Future<NetworkResponse> patchRequest({
+    required String url,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      final Response response = await _dio.patch(url, data: body);
+      _logResponse(response.statusCode ?? 0, response);
+
+      return NetworkResponse(
+        isSuccess: true,
+        responseData: response.data,
+        responseCode: response.statusCode!,
+        errorMessage: (response.data is Map) ? response.data['message'] : null,
+      );
+    } on DioException catch (e) {
+      _logger.e(e.toString());
+
+      String? errorMessage;
+      if (e.response?.data is Map) {
+        errorMessage = e.response?.data['message'];
+      }
+
+      return NetworkResponse(
+        isSuccess: false,
+        responseData: e.response?.data,
+        responseCode: e.response?.statusCode ?? -1,
+        errorMessage: errorMessage ?? e.message ?? 'Something went wrong',
+      );
+    }
+  }
+
+  // ================= DELETE =================
+
+  Future<NetworkResponse> deleteRequest({
+    required String url,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final Response response = await _dio.delete(
+        url,
+        queryParameters: queryParameters,
+      );
       _logResponse(response.statusCode ?? 0, response);
 
       return NetworkResponse(

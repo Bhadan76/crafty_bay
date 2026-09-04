@@ -1,6 +1,6 @@
 import 'package:crafty_bay/app/app_urls.dart';
 import 'package:crafty_bay/core/network_caller/network_caller.dart';
-import 'package:crafty_bay/features/products/data/models/product_list_model.dart';
+import 'package:crafty_bay/features/common/data/model/product_list_model.dart';
 import 'package:get/get.dart';
 
 class ProductByRemarkController extends GetxController {

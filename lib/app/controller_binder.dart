@@ -1,7 +1,9 @@
 import 'package:crafty_bay/core/network_caller/network_caller.dart';
+import 'package:crafty_bay/features/cart/ui/controller/cart_item_controller.dart';
 import 'package:crafty_bay/features/common/controllers/category_controller.dart';
 import 'package:crafty_bay/features/common/controllers/slider_controller.dart';
 import 'package:crafty_bay/features/products/ui/controller/product_by_remark_controller.dart';
+import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
 import 'package:get/get.dart';
 
 import '../features/auth/ui/controllers/auth_controller.dart';
@@ -26,6 +28,8 @@ class ControllerBinder extends Bindings{
     Get.lazyPut(()=>OtpVerifyController());
     Get.put(ProductListController());
     Get.put(AddToCartController());
+    Get.put(CartItemController());
+    Get.put(WishListController());
     Get.put(ProductDetailsController());
     Get.put(ProductByRemarkController());
   }

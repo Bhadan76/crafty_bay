@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 import 'count_button_widget.dart';
 
 class IncrementDecrementCountWidget extends StatefulWidget {
-  const IncrementDecrementCountWidget({super.key, required this.onChanged});
+  const IncrementDecrementCountWidget({super.key, required this.onChanged, this.initialValue = 1});
   final Function(int) onChanged ;
+  final int initialValue;
 
   @override
   State<IncrementDecrementCountWidget> createState() => _IncrementDecrementCountWidgetState();
 }
 
 class _IncrementDecrementCountWidgetState extends State<IncrementDecrementCountWidget> {
-  int count = 1;
+  late int count;
+
+  @override
+  void initState() {
+    super.initState();
+    count = widget.initialValue;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -25,15 +33,17 @@ class _IncrementDecrementCountWidgetState extends State<IncrementDecrementCountW
               setState(() {
                 count--;
               });
+              widget.onChanged(count);
             },
             child: CountButtonWidget(icon: Icons.remove)),
         Text(count.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
         GestureDetector(
             onTap: (){
-              if(count > 20) return;
+              if(count >= 20) return;
               setState(() {
                 count++;
               });
+              widget.onChanged(count);
             },
             child: CountButtonWidget(icon: Icons.add)),
       ],

@@ -26,7 +26,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 3));
-    Get.offAllNamed(MainBottomNavBarScreen.name);
+    // final user = FirebaseAuth.instance.currentUser;
+
+      Get.offAllNamed(MainBottomNavBarScreen.name);
+
   }
   @override
   Widget build(BuildContext context) {

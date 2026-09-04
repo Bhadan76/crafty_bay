@@ -37,7 +37,7 @@ class ProductListModel {
   final String id;
   final String title;
   final String price;
-  final BrandIdModel brandId;
+  final BrandIdModel? brandId;
   final String rating;
   final List<String> images;
   final List<String> colors;

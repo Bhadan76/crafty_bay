@@ -1,10 +1,10 @@
 import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/features/category/ui/screens/category_list_screen.dart';
-import 'package:crafty_bay/features/home/ui/widget/home_carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../home/ui/screens/home_screen.dart';
+import '../../../products/ui/controller/product_by_remark_controller.dart';
 import '../../../wish_list/ui/screens/wish_list_screen.dart';
 import '../../controllers/category_controller.dart';
 import '../../controllers/main_bottom_nav_bar_controller.dart';
@@ -26,6 +26,17 @@ class _MainBottomNavBarScreenState extends State<MainBottomNavBarScreen> {
     CartScreen(),
     WishListScreen(),
   ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.find<SliderController>().getSlider();
+      Get.find<CategoryController>().getCategoryList();
+      Get.find<ProductByRemarkController>().getProductByRemark('popular');
+      Get.find<ProductByRemarkController>().getProductByRemark('special');
+      Get.find<ProductByRemarkController>().getProductByRemark('new');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

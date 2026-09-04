@@ -10,7 +10,9 @@ import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+
+import '../../../auth/ui/controllers/auth_controller.dart';
+import '../../../auth/ui/screens/sign_in_screen.dart';
 
 class ProductListDetails extends StatefulWidget {
   const ProductListDetails({super.key, required this.productId});
@@ -169,11 +171,11 @@ class _ProductListDetailsState extends State<ProductListDetails> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 'Price',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -181,8 +183,8 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                 ),
               ),
               Text(
-                '\$1000',
-                style: TextStyle(
+                Get.find<ProductDetailsController>().product.price,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
@@ -200,6 +202,10 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                   replacement: CenterCircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: () async {
+                      if (AuthController.token == null) {
+                        Get.toNamed(SignInScreen.name);
+                        return;
+                      }
                       if (isColorAvailable && _selectedColor == null) {
                         ShowSnackBarMessage('Please select your color', true);
                         return;
@@ -216,6 +222,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                       );
                       if (isSuccess) {
                         ShowSnackBarMessage('Product Added To Cart');
+
                       } else {
                         ShowSnackBarMessage(
                             _addToCartController.errorMessage ?? 'Something went wrong');
