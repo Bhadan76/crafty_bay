@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
@@ -43,6 +44,13 @@ class AppRoutes {
           return ProductListDetails(productId: productId,);
         }
     ),
+    GetPage(
+        name: PaymentGatewayScreen.name,
+        page: () {
+          final double totalAmount = Get.arguments as double;
+          return PaymentGatewayScreen(totalAmount: totalAmount);
+        }
+    ),
     GetPage(name: ReviewsScreen.name, page: () => const ReviewsScreen()),
     GetPage(name: CreateReviewsScreen.name, page: () => const CreateReviewsScreen()),
   ];
@@ -74,6 +82,9 @@ class AppRoutes {
       route = const ReviewsScreen();
     } else if (settings.name == CreateReviewsScreen.name) {
       route = const CreateReviewsScreen();
+    } else if (settings.name == PaymentGatewayScreen.name) {
+      final double totalAmount = (settings.arguments is double) ? settings.arguments as double : 0.0;
+      route = PaymentGatewayScreen(totalAmount: totalAmount);
     } else {
       route = Scaffold(
         body: Center(

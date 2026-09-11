@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -28,6 +29,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   SignInController signInController = Get.find<SignInController>();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +134,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(width: 10,),
                     IconButton(
-                      onPressed: () {},
+                      onPressed:_onTapFacebookLogin,
                       icon: SvgPicture.asset('assets/icons/facebook.svg',height: 30,width: 30),
                     ),
                   ],
@@ -179,6 +181,34 @@ class _SignInScreenState extends State<SignInScreen> {
       if (mounted) {
         ShowSnackBarMessage('Google Sign-In failed: ${e.toString()}', true);
       }
+    }
+  }
+
+  Future<UserCredential?> _onTapFacebookLogin() async {
+    try {
+      final LoginResult result =
+      await FacebookAuth.instance.login();
+
+      if (result.status == LoginStatus.success) {
+        final accessToken = result.accessToken!;
+
+        final OAuthCredential credential =
+        FacebookAuthProvider.credential(
+          accessToken.tokenString,
+        );
+
+        final UserCredential userCredential =
+        await _firebaseAuth.signInWithCredential(
+          credential,
+        );
+
+        return userCredential;
+      }
+
+      return null;
+    } catch (e) {
+      print('Facebook Login Error: $e');
+      return null;
     }
   }
 

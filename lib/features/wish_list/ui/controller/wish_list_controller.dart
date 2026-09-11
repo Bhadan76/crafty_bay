@@ -10,12 +10,12 @@ class WishListController extends GetxController {
   int _currentPage = 1;
   int? _totalPages;
 
-  String? _errorMessage;
-  List<ProductListModel> _wishList = [];
-
   bool get inProgress => _inProgress;
   bool get isLoadingMore => _isLoadingMore;
+  String? _errorMessage;
   String? get errorMessage => _errorMessage;
+
+  List<ProductListModel> _wishList = [];
   List<ProductListModel> get wishList => _wishList;
 
   Future<bool> getWishList() async {
@@ -27,7 +27,6 @@ class WishListController extends GetxController {
 
     if (_currentPage == 1) {
       _inProgress = true;
-      _wishList.clear();
     } else {
       _isLoadingMore = true;
     }
@@ -43,13 +42,21 @@ class WishListController extends GetxController {
 
     bool isSuccess = false;
     if (response.isSuccess) {
+      if (_currentPage == 1) {
+        _wishList.clear();
+      }
+      
       final data = response.responseData;
       if (data != null && data['data'] != null) {
         for (Map<String, dynamic> item in data['data']) {
-          if (item['product_id'] != null) {
+          if (item['product_id'] != null && item['product_id'] is Map<String, dynamic>) {
             _wishList.add(ProductListModel.formJson(item['product_id']));
+          } else if (item is Map<String, dynamic>) {
+            // Fallback: If product_id is not present, try to parse the item itself
+            _wishList.add(ProductListModel.formJson(item));
           }
         }
+        
         if (data['pagination'] != null) {
           _totalPages = data['pagination']['totalPages'];
         }

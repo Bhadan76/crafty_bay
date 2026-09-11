@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/user_model.dart';
 
@@ -9,6 +11,7 @@ class AuthController  {
 
   static String? token;
   static UserModel? user;
+
 
   static Future<void> saveUserData(String accessToken, UserModel userModel) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

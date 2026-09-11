@@ -34,7 +34,7 @@
 // }
 
 class ProductListModel {
-  final String id;
+  final String? id;
   final String title;
   final String price;
   final BrandIdModel? brandId;
@@ -62,11 +62,16 @@ class ProductListModel {
     List<dynamic> colorList = jsonData['colors'] ?? [];
     List<dynamic> sizeList = jsonData['sizes'] ?? [];
 
+    BrandIdModel? brand;
+    if (jsonData['brandId'] != null && jsonData['brandId'] is Map<String, dynamic>) {
+      brand = BrandIdModel.formJson(jsonData['brandId']);
+    }
+
     return ProductListModel(
         id: jsonData['_id'] ?? '',
         title: jsonData['title'] ?? '',
         price: jsonData['price']?.toString() ?? '0',
-        brandId: BrandIdModel.formJson(jsonData['brandId'] ?? {}),
+        brandId: brand,
         rating: (jsonData['rating'] ?? 3.0).toString(),
         images: List<String>.from(imagesList),
         colors: List<String>.from(colorList),

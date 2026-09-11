@@ -68,9 +68,14 @@ class _WishListScreenState extends State<WishListScreen> {
           if (controller.inProgress && controller.wishList.isEmpty) {
             return const CenterCircularProgressIndicator();
           }
-
+          
           if (controller.wishList.isEmpty) {
-            return const Center(child: Text('Your wish list is empty'));
+            return const Center(
+              child: Text(
+                'Wish list empty',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+            );
           }
 
           return Padding(

@@ -18,13 +18,25 @@ class SignInController extends GetxController{
    update();
    final NetworkResponse response = await Get.find<NetworkCaller>().postRequest(url: AppUrls.signInUrl,body: signInModel.toJson());
    if(response.isSuccess){
-      //save user token
-      String accessToken = response.responseData['token'];
-     //user data
-     UserModel userModel = UserModel.fromJson(response.responseData['data']);
-     AuthController.saveUserData(accessToken, userModel);
-      isSuccess = true;
-      _errorMessage = null;
+     final data = response.responseData;
+     String? accessToken;
+     UserModel? userModel;
+     
+     if (data['token'] != null) {
+       accessToken = data['token'];
+       userModel = UserModel.fromJson(data['data'] ?? {});
+     } else if (data['data'] != null && data['data'] is Map) {
+       accessToken = data['data']['token'];
+       userModel = UserModel.fromJson(data['data']['user'] ?? data['data']);
+     }
+
+     if (accessToken != null && userModel != null) {
+       await AuthController.saveUserData(accessToken, userModel);
+       isSuccess = true;
+       _errorMessage = null;
+     } else {
+       _errorMessage = 'Invalid response format';
+     }
    }else{
      _errorMessage = response.errorMessage;
    }

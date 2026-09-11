@@ -10,15 +10,33 @@ class CartItemController extends GetxController{
   String? get errorMessage => _errorMessage;
   List<CartItemModel> _cartList = [];
   List<CartItemModel> get cartList => _cartList;
+
+  double get totalPrice {
+    double total = 0;
+    for (var item in _cartList) {
+      total += (double.tryParse(item.productListModel?.price ?? '0') ?? 0) *
+          item.quantity;
+    }
+    return total;
+  }
+
+  void changeQuantity(int index, int newQuantity) {
+    _cartList[index] = _cartList[index].copyWith(quantity: newQuantity);
+    update();
+  }
+
   Future<bool> getCartList () async {
     bool isSuccess = false;
     _inProgress = true;
     update();
-    final NetworkResponse response = await Get.find<NetworkCaller>().getRequest(url: AppUrls.CartListUrl);
+    final NetworkResponse response = await Get.find<NetworkCaller>().getRequest(url: AppUrls.cartListUrl);
     if(response.isSuccess){
       List<CartItemModel> list = [];
-      for(Map<String,dynamic> data in response.responseData['data']){
-        list.add(CartItemModel.formJson(data));
+      final data = response.responseData['data'];
+      if (data != null && data is List) {
+        for (Map<String, dynamic> item in data) {
+          list.add(CartItemModel.formJson(item));
+        }
       }
       _cartList = list;
       isSuccess = true;

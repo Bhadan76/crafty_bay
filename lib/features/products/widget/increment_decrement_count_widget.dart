@@ -1,4 +1,7 @@
+import 'package:crafty_bay/features/products/ui/controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'count_button_widget.dart';
 
@@ -17,7 +20,9 @@ class _IncrementDecrementCountWidgetState extends State<IncrementDecrementCountW
   @override
   void initState() {
     super.initState();
+
     count = widget.initialValue;
+
   }
 
   @override
@@ -39,7 +44,7 @@ class _IncrementDecrementCountWidgetState extends State<IncrementDecrementCountW
         Text(count.toString(),style: TextStyle(fontWeight: FontWeight.bold),),
         GestureDetector(
             onTap: (){
-              if(count >= 20) return;
+              if(count >= Get.find<ProductDetailsController>().product.stock) return;
               setState(() {
                 count++;
               });

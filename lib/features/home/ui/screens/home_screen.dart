@@ -9,7 +9,6 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import '../../../../app/assets_path.dart';
 import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
-import '../../../common/controllers/slider_controller.dart';
 import '../widget/app_bar_action_button.dart';
 import '../../../common/ui/widget/category_item.dart';
 import '../widget/home_carousel_slider.dart';

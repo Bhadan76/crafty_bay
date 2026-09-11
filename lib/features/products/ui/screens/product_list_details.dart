@@ -1,12 +1,14 @@
 import 'package:crafty_bay/app/app_colors.dart';
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
 import 'package:crafty_bay/core/widgets/show_snackbar_message.dart';
-import 'package:crafty_bay/features/common/controllers/add_to_cart_controller.dart';
+import 'package:crafty_bay/features/cart/ui/controller/product_add_to_cart_controller.dart';
 import 'package:crafty_bay/features/products/ui/controller/product_details_controller.dart';
 import 'package:crafty_bay/features/products/widget/color_picker_widget.dart';
 import 'package:crafty_bay/features/products/widget/increment_decrement_count_widget.dart';
 import 'package:crafty_bay/features/products/widget/product_details_carousel_slider.dart';
 import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
+import 'package:crafty_bay/features/wish_list/ui/controller/add_to_wish_list_controller.dart';
+import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -28,15 +30,20 @@ class ProductListDetails extends StatefulWidget {
 class _ProductListDetailsState extends State<ProductListDetails> {
   final ProductDetailsController _productDetailsController =
       Get.find<ProductDetailsController>();
-  final AddToCartController _addToCartController =
-      Get.find<AddToCartController>();
+  final ProductAddToCartController _productAddToCartController =
+      Get.find<ProductAddToCartController>();
   String? _selectedColor;
   String? _selectedSize;
+  int _quantity = 1;
+
 
   @override
   void initState() {
     super.initState();
     _productDetailsController.getProductDetails(widget.productId);
+    if (AuthController.token != null) {
+      Get.find<WishListController>().getWishList();
+    }
   }
 
   @override
@@ -87,7 +94,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
               ),
               IncrementDecrementCountWidget(
                 onChanged: (int value) {
-                  print(value);
+                  _quantity = value;
                 },
               ),
             ],
@@ -110,19 +117,64 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                 ),
               ),
               const SizedBox(width: 10),
-              Card(
-                color: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(2.0),
-                  child: Icon(
-                    Icons.favorite_border,
-                    size: 14,
-                    color: Colors.white,
-                  ),
-                ),
+              GetBuilder<WishListController>(
+                builder: (wishListController) {
+                  final bool isWishlisted = wishListController.wishList.any((e) => e.id == widget.productId);
+                  
+                  return GetBuilder<AddToWishListController>(
+                    builder: (addToWishListController) {
+                      return Visibility(
+                        visible: addToWishListController.inProgress == false,
+                        replacement: const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (AuthController.token == null) {
+                              Get.toNamed(SignInScreen.name);
+                              return;
+                            }
+                            
+                            bool isSuccess;
+                            if (isWishlisted) {
+                              isSuccess = await addToWishListController.removeFromWishList(widget.productId);
+                              if (isSuccess) {
+                                ShowSnackBarMessage('Removed from wish list');
+                                wishListController.getWishList(); // Refresh the list
+                              }
+                            } else {
+                               isSuccess = await addToWishListController.addToWishList(widget.productId);
+                              if (isSuccess) {
+                                ShowSnackBarMessage('Added to wish list');
+                                wishListController.getWishList(); // Refresh the list
+                              }
+                            }
+                            
+                            if (!isSuccess) {
+                              ShowSnackBarMessage(addToWishListController.errorMessage ?? 'Action failed', true);
+                            }
+                          },
+                          child: Card(
+                            color: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Icon(
+                                isWishlisted ? Icons.favorite : Icons.favorite_border,
+                                size: 14,
+                                color: isWishlisted ? Colors.yellow[50] : Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  );
+                }
               ),
             ],
           ),
@@ -183,7 +235,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                 ),
               ),
               Text(
-                Get.find<ProductDetailsController>().product.price,
+                '\$${_productDetailsController.product.price}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -194,12 +246,11 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           ),
           SizedBox(
             width: 140,
-            child: GetBuilder<AddToCartController>(
-              init: _addToCartController,
+            child: GetBuilder<ProductAddToCartController>(
               builder: (controller) {
                 return Visibility(
-                  visible:controller.inProgress == false,
-                  replacement: CenterCircularProgressIndicator(),
+                  visible: controller.inProgress == false,
+                  replacement: const CenterCircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: () async {
                       if (AuthController.token == null) {
@@ -215,17 +266,17 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                         return;
                       }
 
-                      bool isSuccess = await _addToCartController.getAddToCartProduct(
+                      bool isSuccess = await _productAddToCartController.addToCart(
                         _productDetailsController.product.id,
                         _selectedColor!,
                         _selectedSize!,
+                        _quantity,
                       );
                       if (isSuccess) {
                         ShowSnackBarMessage('Product Added To Cart');
-
                       } else {
                         ShowSnackBarMessage(
-                            _addToCartController.errorMessage ?? 'Something went wrong');
+                            controller.errorMessage ?? 'Something went wrong');
                       }
                     },
                     child: const Text('Add to Cart'),
