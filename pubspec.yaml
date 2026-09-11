@@ -35,6 +35,7 @@ dependencies:
   google_sign_in: ^7.2.0
   dio: ^5.9.0
   flutter_sslcommerz: ^3.0.2
+  flutter_bkash: ^1.0.1
 
 
 dev_dependencies:
