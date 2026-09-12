@@ -16,6 +16,7 @@ import '../features/auth/ui/controllers/sign_up_controller.dart';
 import '../features/common/controllers/main_bottom_nav_bar_controller.dart';
 import '../features/products/ui/controller/product_details_controller.dart';
 import '../features/products/ui/controller/product_list_controller.dart';
+import '../features/common/controllers/search_controller.dart' as custom_search;
 
 class ControllerBinder extends Bindings{
   @override
@@ -36,5 +37,6 @@ class ControllerBinder extends Bindings{
     Get.put(AddToWishListController());
     Get.put(ProductDetailsController());
     Get.put(ProductByRemarkController());
+    Get.put(custom_search.SearchController());
   }
 }

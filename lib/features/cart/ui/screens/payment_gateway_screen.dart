@@ -120,11 +120,17 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
   }
 
   void _bkashPayment() async {
-    final response = await flutterBkash.pay(
-      context: context,
-      amount: widget.totalAmount,
-      merchantInvoiceNumber: 'merchantInvoiceNumber',
-    );
+    try{
+      final response = await flutterBkash.pay(
+        context: context,
+        amount: widget.totalAmount,
+        merchantInvoiceNumber: 'merchantInvoiceNumber',
+      );
+      _placeOrder();
+    }catch(e){
+      debugPrint('Bkash Error: $e');
+      _showFailureUrl();
+    }
   }
 }
 

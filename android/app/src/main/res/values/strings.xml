@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO: Replace "YOUR_APP_ID" with your actual Facebook App ID from developers.facebook.com -->
+    <string name="facebook_app_id">1845638913516876</string>
+
+    <!-- TODO: Replace "YOUR_CLIENT_TOKEN" with your actual Facebook Client Token -->
+    <string name="facebook_client_token">c4c678d80060d028773976371eeb626d</string>
+
+    <!-- This should be "fb" followed by your App ID. Example: fb123456789 -->
+    <string name="fb_login_protocol_scheme">fb1845638913516876</string>
+</resources>

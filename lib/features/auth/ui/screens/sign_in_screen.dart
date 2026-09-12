@@ -30,6 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   SignInController signInController = Get.find<SignInController>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: context.localization.password,
-                    suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                    suffixIcon: Icon(_showPassword?Icons.visibility_outlined : Icons.visibility_off_outlined)  ,
                   ),
                   validator: (String? value) {
                     if ((value?.length ?? 0) < 6) {

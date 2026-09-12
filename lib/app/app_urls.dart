@@ -13,5 +13,7 @@ class AppUrls {
   static const String wishListUrl = '$_baseUrl/ProductWishList';
   static const String addToCartUrl = '$_baseUrl/CreateCartList';
   static const String cartListUrl = '$_baseUrl/CartList';
+  static const String searchListUrl = '$_baseUrl/SearchProduct';
+  static const String searchSuggestionsUrl = '$_baseUrl/SearchSuggestions';
   static String productByRemarkUrl(String remark) => '$_baseUrl/ListProductByRemark/$remark';
 }

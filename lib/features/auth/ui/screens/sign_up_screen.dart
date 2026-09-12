@@ -9,7 +9,6 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../core/extensions/localization_extension.dart';
 import '../../../../core/widgets/show_snackbar_message.dart';
-import '../../../common/ui/screens/main_bottom_nav_bar_screen.dart';
 import '../controllers/sign_up_controller.dart';
 import '../widget/app_logo_widget.dart';
 import 'otpVerify_screen.dart';
@@ -32,6 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   SignUpController signUpController = Get.find<SignUpController>();
+  final bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: context.localization.password,
-                  suffixIcon: Icon(Icons.remove_red_eye_outlined),
+                  suffixIcon: Icon(_showPassword? Icons.visibility_outlined: Icons.visibility_off_outlined),
                 ),
                 validator: (String? value) {
                   if ((value?.length ?? 0) < 6) {

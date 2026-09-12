@@ -1,5 +1,6 @@
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
+import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,10 @@ class AppRoutes {
         return OtpVerifyScreen(email: email);
       },
     ),
-    GetPage(name: MainBottomNavBarScreen.name, page: () => const MainBottomNavBarScreen()),
+    GetPage(
+      name: MainBottomNavBarScreen.name,
+      page: () => const MainBottomNavBarScreen(),
+    ),
     GetPage(
       name: ProductList.name,
       page: () {
@@ -38,21 +42,25 @@ class AppRoutes {
       },
     ),
     GetPage(
-        name: ProductListDetails.name,
-        page: () {
-        final String productId =  Get.arguments as String;
-          return ProductListDetails(productId: productId,);
-        }
+      name: ProductListDetails.name,
+      page: () {
+        final String productId = Get.arguments as String;
+        return ProductListDetails(productId: productId);
+      },
     ),
     GetPage(
-        name: PaymentGatewayScreen.name,
-        page: () {
-          final double totalAmount = Get.arguments as double;
-          return PaymentGatewayScreen(totalAmount: totalAmount);
-        }
+      name: PaymentGatewayScreen.name,
+      page: () {
+        final double totalAmount = Get.arguments as double;
+        return PaymentGatewayScreen(totalAmount: totalAmount);
+      },
     ),
     GetPage(name: ReviewsScreen.name, page: () => const ReviewsScreen()),
-    GetPage(name: CreateReviewsScreen.name, page: () => const CreateReviewsScreen()),
+    GetPage(
+      name: MainBottomNavBarScreen.name,
+      page: () => const MainBottomNavBarScreen(),
+    ),
+    GetPage(name: SearchScreen.name, page: () => const SearchScreen()),
   ];
 
   static Route<dynamic> routes(RouteSettings settings) {
@@ -65,38 +73,37 @@ class AppRoutes {
     } else if (settings.name == SignUpScreen.name) {
       route = const SignUpScreen();
     } else if (settings.name == OtpVerifyScreen.name) {
-      final String email = (settings.arguments is String) ? settings.arguments as String : '';
+      final String email = (settings.arguments is String)
+          ? settings.arguments as String
+          : '';
       route = OtpVerifyScreen(email: email);
     } else if (settings.name == MainBottomNavBarScreen.name) {
       route = const MainBottomNavBarScreen();
     } else if (settings.name == ProductList.name) {
       final CategoryModel category = settings.arguments as CategoryModel;
-      route = ProductList(
-        categoryId: category.id,
-        categoryName: category.name,
-      );
+      route = ProductList(categoryId: category.id, categoryName: category.name);
     } else if (settings.name == ProductListDetails.name) {
-      final String productId = (settings.arguments is String) ? settings.arguments as String : '';
-      route = ProductListDetails(productId: productId,);
+      final String productId = (settings.arguments is String)
+          ? settings.arguments as String
+          : '';
+      route = ProductListDetails(productId: productId);
     } else if (settings.name == ReviewsScreen.name) {
       route = const ReviewsScreen();
     } else if (settings.name == CreateReviewsScreen.name) {
       route = const CreateReviewsScreen();
     } else if (settings.name == PaymentGatewayScreen.name) {
-      final double totalAmount = (settings.arguments is double) ? settings.arguments as double : 0.0;
+      final double totalAmount = (settings.arguments is double)
+          ? settings.arguments as double
+          : 0.0;
       route = PaymentGatewayScreen(totalAmount: totalAmount);
+    } else if (settings.name == SearchScreen.name) {
+      route = const SearchScreen();
     } else {
       route = Scaffold(
-        body: Center(
-          child: Text('Route not found: ${settings.name}'),
-        ),
+        body: Center(child: Text('Route not found: ${settings.name}')),
       );
     }
 
     return MaterialPageRoute(builder: (ctx) => route);
   }
 }
-
-
-
-
