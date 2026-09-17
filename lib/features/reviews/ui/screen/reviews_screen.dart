@@ -38,7 +38,7 @@ Widget _buildReviewsSection() {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
     decoration: BoxDecoration(
-      color: AppColors.primary.withOpacity(0.1),
+      color: AppColors.primary.withValues(alpha: 0.1),
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(20),
         topRight: Radius.circular(20),

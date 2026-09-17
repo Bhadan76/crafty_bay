@@ -5,13 +5,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../core/extensions/localization_extension.dart';
 import '../../../../core/widgets/show_snackbar_message.dart';
 import '../controllers/sign_up_controller.dart';
 import '../widget/app_logo_widget.dart';
-import 'otpVerify_screen.dart';
+import 'otp_verify_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -53,7 +52,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             children: [
               const SizedBox(height: 64),
-              app_logo_widget(),
+              AppLogoWidget(),
               const SizedBox(height: 24),
               Text(
                 context.localization.register_your_account,
@@ -227,7 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _cleanFormFields();
       Get.offAllNamed(OtpVerifyScreen.name , arguments: email);
     }else{
-      ShowSnackBarMessage(signUpController.errorMessage ?? 'Registration failed', true);
+      showSnackBarMessage(signUpController.errorMessage ?? 'Registration failed', true);
      }
   }
 

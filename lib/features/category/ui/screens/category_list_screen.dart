@@ -32,7 +32,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (_ , __){
+      onPopInvokedWithResult: (didPop, result) {
         Get.find<MainBottomNavBarController>().backToHome();
       },
       child: Scaffold(

@@ -2,12 +2,11 @@ import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart'
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
 import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
-import 'package:crafty_bay/features/home/ui/screens/home_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
 
-import '../features/auth/ui/screens/otpVerify_screen.dart';
+import '../features/auth/ui/screens/otp_verify_screen.dart';
 import '../features/auth/ui/screens/sign_in_screen.dart';
 import '../features/auth/ui/screens/sign_up_screen.dart';
 import '../features/auth/ui/screens/splash_screen.dart';

@@ -1,9 +1,9 @@
 import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
-import 'package:flutter/Material.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class search_filed_widget extends StatelessWidget {
-  const search_filed_widget({
+class SearchFiledWidget extends StatelessWidget {
+  const SearchFiledWidget({
     super.key,
   });
 

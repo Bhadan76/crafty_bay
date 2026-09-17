@@ -3,7 +3,6 @@ import 'package:crafty_bay/features/cart/data/model/cart_item_model.dart';
 import 'package:crafty_bay/features/cart/ui/controller/cart_item_controller.dart';
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/products/widget/increment_decrement_count_widget.dart';
-import 'package:crafty_bay/features/reviews/ui/screen/reviews_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -94,7 +93,7 @@ class _CartScreenState extends State<CartScreen> {
               height: 100,
               width: 100,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return const Icon(Icons.error_outline, size: 50);
               },
             ),
@@ -181,7 +180,7 @@ class _CartScreenState extends State<CartScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.primary.withValues(alpha: 0.1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),

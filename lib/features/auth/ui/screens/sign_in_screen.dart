@@ -44,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               children: <Widget>[
                 const SizedBox(height: 100),
-                app_logo_widget(),
+                const AppLogoWidget(),
                 const SizedBox(height: 24),
                 Text(
                   context.localization.welcome_back,
@@ -177,7 +177,7 @@ class _SignInScreenState extends State<SignInScreen> {
       debugPrint('Google Sign-In Error: $e');
       debugPrint('Stack trace: $stack');
       if (mounted) {
-        ShowSnackBarMessage('Google Sign-In failed: ${e.toString()}', true);
+        showSnackBarMessage('Google Sign-In failed: ${e.toString()}', true);
       }
     }
   }
@@ -203,17 +203,17 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       } else if (result.status == LoginStatus.cancelled) {
         if (mounted) {
-          ShowSnackBarMessage('Facebook login cancelled', false);
+          showSnackBarMessage('Facebook login cancelled', false);
         }
       } else {
         if (mounted) {
-          ShowSnackBarMessage('Facebook login failed: ${result.message}', true);
+          showSnackBarMessage('Facebook login failed: ${result.message}', true);
         }
       }
     } catch (e) {
       debugPrint('Facebook Login Error: $e');
       if (mounted) {
-        ShowSnackBarMessage('Facebook Login Error: ${e.toString()}', true);
+        showSnackBarMessage('Facebook Login Error: ${e.toString()}', true);
       }
     }
   }
@@ -228,7 +228,7 @@ class _SignInScreenState extends State<SignInScreen> {
       _cleanFormFields();
       Get.offAllNamed(MainBottomNavBarScreen.name);
     } else {
-      ShowSnackBarMessage(
+      showSnackBarMessage(
         signInController.errorMessage ?? 'Sign in failed',
         true,
       );

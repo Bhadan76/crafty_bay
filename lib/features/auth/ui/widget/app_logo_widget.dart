@@ -3,8 +3,8 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../../app/assets_path.dart';
 
-class app_logo_widget extends StatelessWidget {
-  const app_logo_widget({
+class AppLogoWidget extends StatelessWidget {
+  const AppLogoWidget({
     super.key,
   });
 

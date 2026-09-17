@@ -15,7 +15,7 @@ class SearchController extends GetxController {
   String _keyword = '';
 
   String? _errorMessage;
-  List<ProductListModel> _productList = [];
+  final List<ProductListModel> _productList = [];
 
   // ── Suggestion state ──────────────────────────────────────────────────────
   bool _suggestionLoading = false;

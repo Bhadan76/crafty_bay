@@ -15,7 +15,7 @@ class WishListController extends GetxController {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  List<ProductListModel> _wishList = [];
+  final List<ProductListModel> _wishList = [];
   List<ProductListModel> get wishList => _wishList;
 
   Future<bool> getWishList() async {
@@ -51,7 +51,7 @@ class WishListController extends GetxController {
         for (Map<String, dynamic> item in data['data']) {
           if (item['product_id'] != null && item['product_id'] is Map<String, dynamic>) {
             _wishList.add(ProductListModel.formJson(item['product_id']));
-          } else if (item is Map<String, dynamic>) {
+          } else {
             // Fallback: If product_id is not present, try to parse the item itself
             _wishList.add(ProductListModel.formJson(item));
           }

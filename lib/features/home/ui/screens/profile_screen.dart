@@ -942,7 +942,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) {
+      builder: (modalContext) {
         return Padding(
           padding: EdgeInsets.only(
             left: 20,
@@ -1043,10 +1043,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             city: cityTEController.text.trim(),
                           );
                           await AuthController.updateUserData(updatedUser);
-                          if (mounted) {
-                            Navigator.pop(context);
+                          if (modalContext.mounted) {
+                            Navigator.pop(modalContext);
                             setState(() {});
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(modalContext).showSnackBar(
                               const SnackBar(
                                 content: Text('Profile updated successfully!'),
                               ),
@@ -1244,7 +1244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showSignOutConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Sign Out'),
         content: const Text('Are you sure you want to sign out from your account?'),
         actions: [
@@ -1255,14 +1255,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
               await AuthController.clearUserData();
-              if (mounted) {
-                setState(() {});
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Signed out successfully')),
-                );
-              }
+              if (!mounted) return;
+              setState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Signed out successfully')),
+              );
             },
             child: const Text('Sign Out', style: TextStyle(color: Colors.white)),
           ),

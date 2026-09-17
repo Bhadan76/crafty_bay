@@ -340,7 +340,7 @@ class _CustomerCareChatScreenState extends State<CustomerCareChatScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemCount: _quickTopics.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           final topic = _quickTopics[index];
           return InkWell(

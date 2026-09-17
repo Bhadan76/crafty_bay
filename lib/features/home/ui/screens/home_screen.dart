@@ -6,9 +6,6 @@ import 'package:crafty_bay/features/products/ui/controller/product_by_remark_con
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import '../../../../app/assets_path.dart';
 import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 import '../widget/app_bar_action_button.dart';
@@ -36,9 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              search_filed_widget(),
+              const SearchFiledWidget(),
               const SizedBox(height: 16),
-              HomeCarouselSlider_widget(),
+              const HomeCarouselSliderWidget(),
               const SizedBox(height: 16),
               SelectionHeader(
                 name: 'Category',

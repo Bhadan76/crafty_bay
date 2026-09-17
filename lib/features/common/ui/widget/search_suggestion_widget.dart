@@ -1,13 +1,14 @@
-import 'package:flutter/Material.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../app/app_colors.dart';
 
 class SearchSuggestionWidget extends StatelessWidget {
-  late bool loading;
-  late List<String> suggestions;
-  late void Function(String title) onTap;
+  final bool loading;
+  final List<String> suggestions;
+  final void Function(String title) onTap;
 
-  SearchSuggestionWidget({
+  const SearchSuggestionWidget({
+    super.key,
     required this.loading,
     required this.suggestions,
     required this.onTap,
@@ -60,7 +61,7 @@ class SearchSuggestionWidget extends StatelessWidget {
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 4),
           itemCount: suggestions.length,
-          separatorBuilder: (_, __) => Divider(
+          separatorBuilder: (_, _) => Divider(
             height: 1,
             color: Colors.grey.shade100,
             indent: 48,

@@ -23,7 +23,7 @@ class CategoryItem extends StatelessWidget {
         children: [
           Card(
             margin: EdgeInsets.symmetric(horizontal: 8),
-            color: AppColors.primary.withOpacity(0.15),
+            color: AppColors.primary.withValues(alpha: 0.15),
             elevation: 0,
             child: Padding(
               padding: const EdgeInsets.all(16),

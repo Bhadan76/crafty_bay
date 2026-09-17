@@ -11,7 +11,7 @@ class CategoryController extends GetxController {
   int? _totalPages;
   
   String? _errorMessage;
-  List<CategoryModel> _categoryList = [];
+  final List<CategoryModel> _categoryList = [];
 
   bool get inProgress => _inProgress;
   bool get isLoadingMore => _isLoadingMore;

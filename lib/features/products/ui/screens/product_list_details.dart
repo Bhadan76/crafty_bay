@@ -141,19 +141,19 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                             if (isWishlisted) {
                               isSuccess = await addToWishListController.removeFromWishList(widget.productId);
                               if (isSuccess) {
-                                ShowSnackBarMessage('Removed from wish list');
+                                showSnackBarMessage('Removed from wish list');
                                 wishListController.getWishList(); // Refresh the list
                               }
                             } else {
                                isSuccess = await addToWishListController.addToWishList(widget.productId);
                               if (isSuccess) {
-                                ShowSnackBarMessage('Added to wish list');
+                                showSnackBarMessage('Added to wish list');
                                 wishListController.getWishList(); // Refresh the list
                               }
                             }
                             
                             if (!isSuccess) {
-                              ShowSnackBarMessage(addToWishListController.errorMessage ?? 'Action failed', true);
+                              showSnackBarMessage(addToWishListController.errorMessage ?? 'Action failed', true);
                             }
                           },
                           child: Card(
@@ -214,7 +214,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -258,11 +258,11 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                         return;
                       }
                       if (isColorAvailable && _selectedColor == null) {
-                        ShowSnackBarMessage('Please select your color', true);
+                        showSnackBarMessage('Please select your color', true);
                         return;
                       }
                       if (isSizeAvailable && _selectedSize == null) {
-                        ShowSnackBarMessage('Please select your size', true);
+                        showSnackBarMessage('Please select your size', true);
                         return;
                       }
 
@@ -273,9 +273,9 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                         _quantity,
                       );
                       if (isSuccess) {
-                        ShowSnackBarMessage('Product Added To Cart');
+                        showSnackBarMessage('Product Added To Cart');
                       } else {
-                        ShowSnackBarMessage(
+                        showSnackBarMessage(
                             controller.errorMessage ?? 'Something went wrong');
                       }
                     },

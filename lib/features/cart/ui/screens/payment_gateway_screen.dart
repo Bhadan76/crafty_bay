@@ -79,9 +79,9 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
               'Select a payment method',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            paymentCart(image: 'https://brandlogos.net/wp-content/uploads/2026/01/bkash-logo_brandlogos.net_2qvpe-768x352.png', onTap:_bkashPayment ,),
+            PaymentCart(image: 'https://brandlogos.net/wp-content/uploads/2026/01/bkash-logo_brandlogos.net_2qvpe-768x352.png', onTap:_bkashPayment ,),
             SizedBox(height: 15,),
-            paymentCart(image: 'https://cdn.brandfetch.io/id3q3A-eCg/w/462/h/100/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B', onTap: _sslCommerces ,),
+            PaymentCart(image: 'https://cdn.brandfetch.io/id3q3A-eCg/w/462/h/100/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B', onTap: _sslCommerces ,),
           ],
         ),
       ),
@@ -121,7 +121,7 @@ class _PaymentGatewayScreenState extends State<PaymentGatewayScreen> {
 
   void _bkashPayment() async {
     try{
-      final response = await flutterBkash.pay(
+      await flutterBkash.pay(
         context: context,
         amount: widget.totalAmount,
         merchantInvoiceNumber: 'merchantInvoiceNumber',

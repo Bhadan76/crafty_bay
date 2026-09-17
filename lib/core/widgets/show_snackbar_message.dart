@@ -1,7 +1,7 @@
-import 'package:flutter/Material.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void ShowSnackBarMessage(String message ,[bool isError = false]){
+void showSnackBarMessage(String message ,[bool isError = false]){
   Get.snackbar(message,'', backgroundColor: isError ? Colors.red : null,snackPosition: SnackPosition.BOTTOM, );
 
 }

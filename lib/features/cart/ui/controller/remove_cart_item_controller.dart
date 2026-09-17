@@ -7,7 +7,7 @@ import '../../data/model/cart_item_model.dart';
 class RemoveCartItemController extends GetxController {
   final List<String> _deletingItemIds = [];
   String? _errorMessage;
-  List<CartItemModel> _cartList = [];
+  final List<CartItemModel> _cartList = [];
 
   bool isDeleting(String cartId) => _deletingItemIds.contains(cartId);
   String? get errorMessage => _errorMessage;

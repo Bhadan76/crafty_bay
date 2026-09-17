@@ -1,7 +1,7 @@
-import 'package:flutter/Material.dart';
+import 'package:flutter/material.dart';
 
-class paymentCart extends StatelessWidget {
-  const paymentCart({
+class PaymentCart extends StatelessWidget {
+  const PaymentCart({
     super.key, required this.image, required this.onTap,
   });
   final String image;
