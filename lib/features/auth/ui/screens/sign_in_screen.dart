@@ -185,31 +185,39 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  Future<UserCredential?> _onTapFacebookLogin() async {
+  Future<void> _onTapFacebookLogin() async {
     try {
-      final LoginResult result =
-      await FacebookAuth.instance.login();
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
 
       if (result.status == LoginStatus.success) {
         final accessToken = result.accessToken!;
 
-        final OAuthCredential credential =
-        FacebookAuthProvider.credential(
+        final OAuthCredential credential = FacebookAuthProvider.credential(
           accessToken.tokenString,
         );
 
         final UserCredential userCredential =
-        await _firebaseAuth.signInWithCredential(
-          credential,
-        );
+            await _firebaseAuth.signInWithCredential(credential);
 
-        return userCredential;
+        if (userCredential.user != null && mounted) {
+          Get.offAllNamed(MainBottomNavBarScreen.name);
+        }
+      } else if (result.status == LoginStatus.cancelled) {
+        if (mounted) {
+          ShowSnackBarMessage('Facebook login cancelled', false);
+        }
+      } else {
+        if (mounted) {
+          ShowSnackBarMessage('Facebook login failed: ${result.message}', true);
+        }
       }
-
-      return null;
     } catch (e) {
-      print('Facebook Login Error: $e');
-      return null;
+      debugPrint('Facebook Login Error: $e');
+      if (mounted) {
+        ShowSnackBarMessage('Facebook Login Error: ${e.toString()}', true);
+      }
     }
   }
 

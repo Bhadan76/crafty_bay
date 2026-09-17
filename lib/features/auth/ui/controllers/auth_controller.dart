@@ -11,7 +11,7 @@ class AuthController  {
 
   static String? token;
   static UserModel? user;
-
+  static UserModel? userModel;
 
   static Future<void> saveUserData(String accessToken, UserModel userModel) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -47,10 +47,23 @@ class AuthController  {
     return false;
   }
 
+  static Future<void> updateUserData(UserModel updatedUser) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userKey, jsonEncode(updatedUser.toJson()));
+    user = updatedUser;
+  }
+
   static Future<void> clearUserData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     token = null;
     user = null;
+    try {
+      await FirebaseAuth.instance.signOut();
+    } catch (_) {}
+    try {
+      await FacebookAuth.instance.logOut();
+    } catch (_) {}
   }
 }
+

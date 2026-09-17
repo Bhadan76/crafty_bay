@@ -5,6 +5,11 @@ class UserModel {
   final String email;
   final String mobile;
   final String city;
+  final String? photo;
+
+  String get fullName {
+    return '$firstName $lastName';
+  }
 
   UserModel({
     required this.id,
@@ -12,7 +17,7 @@ class UserModel {
     required this.lastName,
     required this.email,
     required this.mobile,
-    required this.city,
+    required this.city, this.photo,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {

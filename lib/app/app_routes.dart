@@ -1,6 +1,8 @@
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
+import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
+import 'package:crafty_bay/features/home/ui/screens/home_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,8 @@ import '../features/reviews/ui/screen/create_reviews_screen.dart';
 import '../features/reviews/ui/screen/reviews_screen.dart';
 
 import 'package:get/get.dart';
+
+import 'package:crafty_bay/features/home/ui/screens/customer_care_chat_screen.dart';
 
 class AppRoutes {
   static List<GetPage> getPages = [
@@ -56,11 +60,12 @@ class AppRoutes {
       },
     ),
     GetPage(name: ReviewsScreen.name, page: () => const ReviewsScreen()),
-    GetPage(
-      name: MainBottomNavBarScreen.name,
-      page: () => const MainBottomNavBarScreen(),
-    ),
     GetPage(name: SearchScreen.name, page: () => const SearchScreen()),
+    GetPage(name: ProfileScreen.name, page: () => const ProfileScreen()),
+    GetPage(
+      name: CustomerCareChatScreen.name,
+      page: () => const CustomerCareChatScreen(),
+    ),
   ];
 
   static Route<dynamic> routes(RouteSettings settings) {
@@ -68,9 +73,7 @@ class AppRoutes {
 
     if (settings.name == SplashScreen.name) {
       route = const SplashScreen();
-    } else if (settings.name == SignInScreen.name) {
-      route = const SignInScreen();
-    } else if (settings.name == SignUpScreen.name) {
+    }  else if (settings.name == SignUpScreen.name) {
       route = const SignUpScreen();
     } else if (settings.name == OtpVerifyScreen.name) {
       final String email = (settings.arguments is String)
@@ -98,6 +101,10 @@ class AppRoutes {
       route = PaymentGatewayScreen(totalAmount: totalAmount);
     } else if (settings.name == SearchScreen.name) {
       route = const SearchScreen();
+    } else if (settings.name == ProfileScreen.name) {
+      route = const ProfileScreen();
+    } else if (settings.name == CustomerCareChatScreen.name) {
+      route = const CustomerCareChatScreen();
     } else {
       route = Scaffold(
         body: Center(child: Text('Route not found: ${settings.name}')),

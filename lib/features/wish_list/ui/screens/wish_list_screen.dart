@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/widgets/center_circular_progress_indicator.dart';
+import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
 
 class WishListScreen extends StatefulWidget {
   const WishListScreen({super.key});
@@ -38,8 +39,13 @@ class _WishListScreenState extends State<WishListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wish List',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Wish List'),
+        leading: IconButton(
+          onPressed: () {
+            Get.find<MainBottomNavBarController>().backToHome();
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: GetBuilder<WishListController>(
         builder: (controller) {

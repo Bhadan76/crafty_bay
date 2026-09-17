@@ -36,6 +36,7 @@ dependencies:
   dio: ^5.9.0
   flutter_sslcommerz: ^3.0.2
   flutter_bkash: ^1.0.1
+  image_picker: ^1.2.3
 
 
 dev_dependencies:
