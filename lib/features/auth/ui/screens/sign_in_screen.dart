@@ -162,9 +162,6 @@ class _SignInScreenState extends State<SignInScreen> {
             '876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com',
       );
       final googleUser = await GoogleSignIn.instance.authenticate();
-      if (googleUser == null) {
-        return;
-      }
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
