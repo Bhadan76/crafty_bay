@@ -3,6 +3,8 @@ import 'package:crafty_bay/features/common/controllers/category_controller.dart'
 import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
 import 'package:crafty_bay/features/home/ui/screens/customer_care_chat_screen.dart';
 import 'package:crafty_bay/features/products/ui/controller/product_by_remark_controller.dart';
+import 'package:crafty_bay/features/common/controllers/notification_controller.dart';
+import 'package:crafty_bay/features/common/ui/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -149,11 +151,49 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         const SizedBox(width: 10),
-        AppBarActionButton(
-          icon: Icons.notifications_active_outlined,
-          onTap: () {},
+        Stack(
+          children: [
+            AppBarActionButton(
+              icon: Icons.notifications_active_outlined,
+              onTap: () {
+                Get.toNamed(NotificationScreen.name);
+              },
+            ),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: GetX<NotificationController>(
+                builder: (controller) {
+                  if (controller.unreadCount == 0) {
+                    return const SizedBox.shrink();
+                  }
+                  return Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${controller.unreadCount}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
+

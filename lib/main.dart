@@ -12,11 +12,35 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'app/app.dart';
 import 'features/auth/ui/controllers/auth_controller.dart';
 import 'firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  String title = 'New Notification';
+  String body = '';
+
+  if (message.notification != null) {
+    title = message.notification!.title ?? title;
+    body = message.notification!.body ?? body;
+  } else if (message.data.isNotEmpty) {
+    title = message.data['title'] ?? title;
+    body = message.data['body'] ?? body;
+  }
+
+  await FirebaseFirestore.instance.collection('notifications').add({
+    'title': title,
+    'body': body,
+    'createdAt': FieldValue.serverTimestamp(),
+    'isRead': false,
+  });
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +48,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 

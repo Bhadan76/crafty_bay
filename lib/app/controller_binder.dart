@@ -7,6 +7,7 @@ import 'package:crafty_bay/features/cart/ui/controller/product_add_to_cart_contr
 import 'package:crafty_bay/features/cart/ui/controller/remove_cart_item_controller.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/add_to_wish_list_controller.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
+import 'package:crafty_bay/features/common/controllers/notification_controller.dart';
 import 'package:get/get.dart';
 
 import '../features/auth/ui/controllers/auth_controller.dart';
@@ -38,5 +39,6 @@ class ControllerBinder extends Bindings{
     Get.put(ProductDetailsController());
     Get.put(ProductByRemarkController());
     Get.put(custom_search.SearchController());
+    Get.put(NotificationController());
   }
 }

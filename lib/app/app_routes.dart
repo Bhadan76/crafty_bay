@@ -4,6 +4,7 @@ import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
 import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
+import 'package:crafty_bay/features/common/ui/screens/notification_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/auth/ui/screens/otp_verify_screen.dart';
@@ -65,6 +66,7 @@ class AppRoutes {
       name: CustomerCareChatScreen.name,
       page: () => const CustomerCareChatScreen(),
     ),
+    GetPage(name: NotificationScreen.name, page: () => const NotificationScreen()),
   ];
 
   static Route<dynamic> routes(RouteSettings settings) {
@@ -104,6 +106,8 @@ class AppRoutes {
       route = const ProfileScreen();
     } else if (settings.name == CustomerCareChatScreen.name) {
       route = const CustomerCareChatScreen();
+    } else if (settings.name == NotificationScreen.name) {
+      route = const NotificationScreen();
     } else {
       route = Scaffold(
         body: Center(child: Text('Route not found: ${settings.name}')),
