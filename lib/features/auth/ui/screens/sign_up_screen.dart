@@ -30,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   SignUpController signUpController = Get.find<SignUpController>();
-  final bool _showPassword = false;
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -137,10 +137,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextFormField(
                 controller: _passwordController,
                 textInputAction: TextInputAction.next,
-                obscureText: true,
+                obscureText: !_showPassword,
                 decoration: InputDecoration(
                   hintText: context.localization.password,
-                  suffixIcon: Icon(_showPassword? Icons.visibility_outlined: Icons.visibility_off_outlined),
+                  suffixIcon: IconButton(onPressed: () {
+                    _showPassword =! _showPassword;
+                    setState(() {});
+                  }, icon: Icon(_showPassword?Icons.visibility_outlined: Icons.visibility_off_outlined)),
                 ),
                 validator: (String? value) {
                   if ((value?.length ?? 0) < 6) {

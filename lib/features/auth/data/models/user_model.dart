@@ -21,22 +21,47 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(id: json['_id'],
-        firstName: json['firstName'] ?? '',
-        lastName: json['lastName'] ?? '',
-        email: json['email'],
-        mobile: json['mobile'] ?? '',
-        city: json['city'] ?? '',
+    return UserModel(
+      id: (json['_id'] ?? json['id'] ?? json['uid'] ?? '').toString(),
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      email: (json['email'] ?? '').toString(),
+      mobile: (json['mobile'] ?? '').toString(),
+      city: (json['city'] ?? '').toString(),
+      photo: (json['photo'] ?? json['photoURL'] ?? json['picture'])?.toString(),
     );
   }
+
+  UserModel copyWith({
+    String? id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    String? mobile,
+    String? city,
+    String? photo,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      mobile: mobile ?? this.mobile,
+      city: city ?? this.city,
+      photo: photo ?? this.photo,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
+      'id': id,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
       'mobile': mobile,
       'city': city,
+      'photo': photo,
     };
   }
 }

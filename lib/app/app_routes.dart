@@ -1,3 +1,4 @@
+import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
@@ -23,6 +24,7 @@ class AppRoutes {
   static List<GetPage> getPages = [
     GetPage(name: SplashScreen.name, page: () => const SplashScreen()),
     GetPage(name: SignInScreen.name, page: () => const SignInScreen()),
+    GetPage(name: CartScreen.name, page: () => const CartScreen()),
     GetPage(name: SignUpScreen.name, page: () => const SignUpScreen()),
     GetPage(
       name: OtpVerifyScreen.name,
@@ -74,7 +76,11 @@ class AppRoutes {
 
     if (settings.name == SplashScreen.name) {
       route = const SplashScreen();
-    }  else if (settings.name == SignUpScreen.name) {
+    } else if (settings.name == SignInScreen.name) {
+      route = const SignInScreen();
+    } else if (settings.name == CartScreen.name) {
+      route = const CartScreen();
+    } else if (settings.name == SignUpScreen.name) {
       route = const SignUpScreen();
     } else if (settings.name == OtpVerifyScreen.name) {
       final String email = (settings.arguments is String)

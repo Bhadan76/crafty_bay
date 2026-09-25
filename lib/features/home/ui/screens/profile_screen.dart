@@ -6,6 +6,7 @@ import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:crafty_bay/features/cart/ui/controller/cart_item_controller.dart';
 import 'package:crafty_bay/features/common/controllers/main_bottom_nav_bar_controller.dart';
+import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_bar_screen.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,14 +34,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfileData() async {
-    await AuthController.getUserData();
-    await _loadSavedProfileImage();
+    try {
+      await AuthController.getUserData();
+    } catch (e, st) {
+      debugPrint('ProfileScreen.getUserData error: $e\n$st');
+    }
+    try {
+      await _loadSavedProfileImage();
+    } catch (e, st) {
+      debugPrint('ProfileScreen.loadProfileImage error: $e\n$st');
+    }
+    // Fetch CraftyBay-specific data (wishlist/cart) for authenticated users.
     if (AuthController.token != null) {
+      // Fire-and-forget; never let a 401 here crash the screen — the
+      // NetworkCaller already handles token cleanup.
       if (Get.isRegistered<WishListController>()) {
-        Get.find<WishListController>().getWishList();
+        try {
+          // ignore: discarded_futures
+          Get.find<WishListController>().getWishList();
+        } catch (_) {}
       }
       if (Get.isRegistered<CartItemController>()) {
-        Get.find<CartItemController>().getCartList();
+        try {
+          // ignore: discarded_futures
+          Get.find<CartItemController>().getCartList();
+        } catch (_) {}
       }
     }
     if (mounted) {
@@ -58,6 +76,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       }
     }
+  }
+
+  /// Pick the right avatar image source. Returns null so that CircleAvatar
+  /// falls back to its backgroundColor + child widget — avoids the
+  /// `as ImageProvider<Object>?` cast that crashed on newer Flutter.
+  ImageProvider? _pickAvatarImage() {
+    if (_profileImageFile != null) {
+      return FileImage(_profileImageFile!);
+    }
+    // Prefer the photo saved on our local user model (covers CraftyBay,
+    // Google and Facebook sign-ins).
+    final String? localPhoto = _user?.photo;
+    if (localPhoto != null && localPhoto.isNotEmpty) {
+      return NetworkImage(localPhoto);
+    }
+    // Fall back to the live Firebase profile, if any.
+    final String? fbPhoto = _firebaseUser?.photoURL;
+    if (fbPhoto != null && fbPhoto.isNotEmpty) {
+      return NetworkImage(fbPhoto);
+    }
+    return null;
   }
 
   bool get _isLoggedIn {
@@ -329,11 +368,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircleAvatar(
                             radius: 55,
                             backgroundColor: const Color(0xffE8F8F8),
-                            backgroundImage: _profileImageFile != null
-                                ? FileImage(_profileImageFile!)
-                                : (_firebaseUser?.photoURL != null
-                                    ? NetworkImage(_firebaseUser!.photoURL!)
-                                    : null) as ImageProvider<Object>?,
+                            backgroundImage: _pickAvatarImage(),
                             child: (_profileImageFile == null &&
                                     _firebaseUser?.photoURL == null)
                                 ? Text(
@@ -1262,6 +1297,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Signed out successfully')),
               );
+              // After sign-out, push the user back to the home tab rather
+              // than leaving them stranded on the profile screen as a guest.
+              Get.offAllNamed(MainBottomNavBarScreen.name);
             },
             child: const Text('Sign Out', style: TextStyle(color: Colors.white)),
           ),

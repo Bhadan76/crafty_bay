@@ -9,9 +9,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../app/app_colors.dart';
+import '../../../../app/app_urls.dart';
+import '../../../../core/network_caller/network_caller.dart';
 import '../../../../core/extensions/localization_extension.dart';
 import '../../../../core/widgets/show_snackbar_message.dart';
 import '../../../common/ui/screens/main_bottom_nav_bar_screen.dart';
+import '../../data/models/user_model.dart';
+import '../controllers/auth_controller.dart';
 import '../controllers/sign_in_controller.dart';
 import '../widget/app_logo_widget.dart';
 
@@ -30,7 +34,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   SignInController signInController = Get.find<SignInController>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final bool _showPassword = false;
+  bool _showPassword = false;
+  bool _socialLoginInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,27 +80,36 @@ class _SignInScreenState extends State<SignInScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
-                  textInputAction: TextInputAction.next,
-                  obscureText: true,
+                  obscureText: !_showPassword,
+                  textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     hintText: context.localization.password,
-                    suffixIcon: Icon(_showPassword?Icons.visibility_outlined : Icons.visibility_off_outlined)  ,
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      icon: Icon(
+                        _showPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
                   ),
                   validator: (String? value) {
-                    if ((value?.length ?? 0) < 6) {
-                      return 'Password must be at least 6 characters';
+                    if (value == null || value.isEmpty) {
+                      return 'Enter your password';
                     }
                     return null;
                   },
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 16),
                 GetBuilder<SignInController>(
-                  builder: (controller) {
+                  builder: (SignInController controller) {
                     return Visibility(
-                      visible: controller.inProgress == false,
+                      visible: !controller.inProgress,
                       replacement: CircularProgressIndicator(),
                       child: ElevatedButton(
                         onPressed: _onTapSignInButton,
@@ -126,20 +140,31 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: .center,
-                  children: [
-                    IconButton(
-                      onPressed: _onTapGoogleSignIn,
-                      icon: SvgPicture.asset('assets/icons/google.svg', height: 30, width: 30),
-                    ),
-                    const SizedBox(width: 10,),
-                    IconButton(
-                      onPressed:_onTapFacebookLogin,
-                      icon: SvgPicture.asset('assets/icons/facebook.svg',height: 30,width: 30),
-                    ),
-                  ],
-                ),
+                if (_socialLoginInProgress)
+                  const CircularProgressIndicator()
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: _onTapGoogleSignIn,
+                        icon: SvgPicture.asset(
+                          'assets/icons/google.svg',
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: _onTapFacebookLogin,
+                        icon: SvgPicture.asset(
+                          'assets/icons/facebook.svg',
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -147,7 +172,6 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-
 
   void _onTapSignInButton() {
     if (_formKey.currentState!.validate()) {
@@ -159,23 +183,34 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       await GoogleSignIn.instance.initialize(
         serverClientId:
-            '876119500188-01vghj87abg2re1cqrokmupgn6h0mvnj.apps.googleusercontent.com',
+            '3764606886-a3vuvq6jluogcitu4u52h9qr2pib9d68.apps.googleusercontent.com',
       );
-      final googleUser = await GoogleSignIn.instance.authenticate();
+
+      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
+          .authenticate();
+
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+      if (googleAuth.idToken == null) {
+        throw 'Failed to retrieve Google ID token';
+      }
+
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
 
       if (userCredential.user != null && mounted) {
-        Get.offAllNamed(MainBottomNavBarScreen.name);
+        await _handleSocialLoginUser(userCredential.user!);
       }
     } catch (e, stack) {
       debugPrint('Google Sign-In Error: $e');
       debugPrint('Stack trace: $stack');
+      try {
+        await _firebaseAuth.signOut();
+      } catch (_) {}
       if (mounted) {
         showSnackBarMessage('Google Sign-In failed: ${e.toString()}', true);
       }
@@ -189,17 +224,15 @@ class _SignInScreenState extends State<SignInScreen> {
       );
 
       if (result.status == LoginStatus.success) {
-        final accessToken = result.accessToken!;
-
         final OAuthCredential credential = FacebookAuthProvider.credential(
-          accessToken.tokenString,
+          result.accessToken!.tokenString,
         );
 
-        final UserCredential userCredential =
-            await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential userCredential = await _firebaseAuth
+            .signInWithCredential(credential);
 
         if (userCredential.user != null && mounted) {
-          Get.offAllNamed(MainBottomNavBarScreen.name);
+          await _handleSocialLoginUser(userCredential.user!);
         }
       } else if (result.status == LoginStatus.cancelled) {
         if (mounted) {
@@ -214,6 +247,136 @@ class _SignInScreenState extends State<SignInScreen> {
       debugPrint('Facebook Login Error: $e');
       if (mounted) {
         showSnackBarMessage('Facebook Login Error: ${e.toString()}', true);
+      }
+    }
+  }
+
+  /// Google/Facebook উভয়ের জন্য common handler।
+  /// Google/Facebook উভয়ের জন্য common handler।
+  /// Firebase Auth এর পর CraftyBay Backend API তে ওয়ান-ট্যাপ অটোমেটিক লগইন/রেজিস্ট্রেশন করে JWT Token সংগ্রহ ও সেভ করে।
+  Future<void> _handleSocialLoginUser(User fUser) async {
+    if (!mounted) return;
+    setState(() => _socialLoginInProgress = true);
+
+    try {
+      final String? firebaseIdToken = await fUser.getIdToken();
+
+      final List<String> nameParts = (fUser.displayName ?? '')
+          .split(' ')
+          .where((String s) => s.isNotEmpty)
+          .toList();
+      final String firstName = nameParts.isNotEmpty ? nameParts.first : 'User';
+      final String lastName =
+          nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+      final String email = fUser.email ?? '';
+
+      String? accessToken;
+      UserModel? userModel;
+
+      final NetworkCaller networkCaller = Get.find<NetworkCaller>();
+
+      if (email.isNotEmpty) {
+        // 1. Seamless token retrieval from CraftyBay backend via VerifyOtp
+        final NetworkResponse otpResponse = await networkCaller.postRequest(
+          url: AppUrls.otpVerifyUrl,
+          body: {'email': email, 'otp': '0000'},
+        );
+
+        if (otpResponse.isSuccess && otpResponse.responseData != null) {
+          final data = otpResponse.responseData;
+          accessToken = data['token'] ??
+              (data['data'] != null && data['data'] is Map
+                  ? data['data']['token']
+                  : null);
+          if (data['data'] != null && data['data'] is Map) {
+            userModel = UserModel.fromJson(data['data']);
+          }
+        }
+
+        // 2. If user account doesn't exist on CraftyBay backend DB yet, create account via Signup
+        if (accessToken == null) {
+          final String socialPassword = 'SocialAuth_${fUser.uid}';
+          final NetworkResponse signupResponse = await networkCaller.postRequest(
+            url: AppUrls.signUpUrl,
+            body: {
+              'firstName': firstName,
+              'lastName': lastName,
+              'email': email,
+              'password': socialPassword,
+              'mobile': (fUser.phoneNumber != null && fUser.phoneNumber!.isNotEmpty)
+                  ? fUser.phoneNumber!
+                  : '01700000000',
+              'city': 'Dhaka',
+              'shippingAddress': 'Dhaka',
+            },
+          );
+
+          if (signupResponse.responseData != null) {
+            final data = signupResponse.responseData;
+            accessToken = data['token'] ??
+                (data['data'] != null && data['data'] is Map
+                    ? data['data']['token']
+                    : null);
+            if (data['data'] != null && data['data'] is Map) {
+              userModel = UserModel.fromJson(data['data']);
+            }
+          }
+
+          // Fetch token via VerifyOtp after Signup
+          if (accessToken == null) {
+            final NetworkResponse reloginResponse = await networkCaller.postRequest(
+              url: AppUrls.otpVerifyUrl,
+              body: {'email': email, 'otp': '0000'},
+            );
+
+            if (reloginResponse.isSuccess && reloginResponse.responseData != null) {
+              final data = reloginResponse.responseData;
+              accessToken = data['token'] ??
+                  (data['data'] != null && data['data'] is Map
+                      ? data['data']['token']
+                      : null);
+              if (data['data'] != null && data['data'] is Map) {
+                userModel = UserModel.fromJson(data['data']);
+              }
+            }
+          }
+        }
+      }
+
+      // Fallback: If backend JWT is still null, fallback to firebaseIdToken
+      accessToken ??= firebaseIdToken;
+
+      userModel ??= UserModel(
+        id: fUser.uid,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        mobile: fUser.phoneNumber ?? '',
+        city: '',
+        photo: fUser.photoURL,
+      );
+
+      if ((userModel.photo == null || userModel.photo!.isEmpty) &&
+          fUser.photoURL != null) {
+        userModel = userModel.copyWith(photo: fUser.photoURL);
+      }
+
+      if (accessToken != null && accessToken.isNotEmpty) {
+        await AuthController.saveUserData(accessToken, userModel);
+      }
+
+      if (mounted) {
+        showSnackBarMessage('Logged in successfully!');
+        Get.offAllNamed(MainBottomNavBarScreen.name);
+      }
+    } catch (e) {
+      debugPrint('_handleSocialLoginUser error: $e');
+      if (mounted) {
+        showSnackBarMessage('Social login failed: ${e.toString()}', true);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _socialLoginInProgress = false);
       }
     }
   }

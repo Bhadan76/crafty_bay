@@ -1,8 +1,5 @@
 import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
-import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:logger/logger.dart';
 
 part 'network_response.dart';
@@ -11,14 +8,16 @@ class NetworkCaller {
   final Logger _logger = Logger();
   final Dio _dio = Dio(
     BaseOptions(
-      connectTimeout: const Duration(seconds: 90),
-      receiveTimeout: const Duration(seconds: 90),
+      connectTimeout: const Duration(seconds: 180),
+      receiveTimeout: const Duration(seconds: 180),
+      sendTimeout: const Duration(seconds: 180),
     ),
   );
 
+  /// Called when the backend returns 401. Clears the session when the
+  /// token has been expired or revoked by the server.
   static void onUnauthorized() {
     AuthController.clearUserData();
-    Get.offAllNamed(SignInScreen.name);
   }
 
   NetworkCaller() {
@@ -38,7 +37,13 @@ class NetworkCaller {
         },
         onError: (error, handler) {
           if (error.response?.statusCode == 401) {
-            onUnauthorized();
+            final String path = error.requestOptions.path;
+            final bool isAuthRoute = path.contains('/UserLogin') ||
+                path.contains('/Signup') ||
+                path.contains('/VerifyOtp');
+            if (!isAuthRoute) {
+              onUnauthorized();
+            }
           }
           handler.next(error);
         },

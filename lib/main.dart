@@ -15,6 +15,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'app/app.dart';
 import 'features/auth/ui/controllers/auth_controller.dart';
@@ -47,6 +48,10 @@ Future<void> main() async {
   await AuthController.getUserData();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await GoogleSignIn.instance.initialize(
+    serverClientId: '3764606886-a3vuvq6jluogcitu4u52h9qr2pib9d68.apps.googleusercontent.com',
   );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

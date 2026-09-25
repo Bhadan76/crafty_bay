@@ -14,6 +14,7 @@ class AppUrls {
   static const String addToCartUrl = '$_baseUrl/CreateCartList';
   static const String cartListUrl = '$_baseUrl/CartList';
   static const String createProfileUrl = '$_baseUrl/CreateProfile';
+  static const String socialLoginUrl = '$_baseUrl/SocialLogin';
   static const String listCouponsUrl = '$_baseUrl/ListCoupons';
   static const String searchListUrl = '$_baseUrl/SearchProduct';
   static const String searchSuggestionsUrl = '$_baseUrl/SearchSuggestions';

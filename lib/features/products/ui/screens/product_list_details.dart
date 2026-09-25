@@ -36,7 +36,6 @@ class _ProductListDetailsState extends State<ProductListDetails> {
   String? _selectedSize;
   int _quantity = 1;
 
-
   @override
   void initState() {
     super.initState();
@@ -65,8 +64,11 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                   imageList: controller.product.images,
                 ),
                 _buildProductDetails(controller),
-                SizedBox(height: 100.h,),
-                _buildPriceAndAddToCartSection(controller.product.sizes.isNotEmpty,controller.product.colors.isNotEmpty),
+                SizedBox(height: 100.h),
+                _buildPriceAndAddToCartSection(
+                  controller.product.sizes.isNotEmpty,
+                  controller.product.colors.isNotEmpty,
+                ),
               ],
             ),
           );
@@ -119,8 +121,10 @@ class _ProductListDetailsState extends State<ProductListDetails> {
               const SizedBox(width: 10),
               GetBuilder<WishListController>(
                 builder: (wishListController) {
-                  final bool isWishlisted = wishListController.wishList.any((e) => e.id == widget.productId);
-                  
+                  final bool isWishlisted = wishListController.wishList.any(
+                    (e) => e.id == widget.productId,
+                  );
+
                   return GetBuilder<AddToWishListController>(
                     builder: (addToWishListController) {
                       return Visibility(
@@ -132,28 +136,35 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                         ),
                         child: GestureDetector(
                           onTap: () async {
-                            if (AuthController.token == null) {
+                            if (AuthController.token == null || AuthController.token!.isEmpty) {
+                              showSnackBarMessage('Please sign in to add to wish list', true);
                               Get.toNamed(SignInScreen.name);
                               return;
                             }
-                            
+
                             bool isSuccess;
                             if (isWishlisted) {
-                              isSuccess = await addToWishListController.removeFromWishList(widget.productId);
+                              isSuccess = await addToWishListController
+                                  .removeFromWishList(widget.productId);
                               if (isSuccess) {
                                 showSnackBarMessage('Removed from wish list');
-                                wishListController.getWishList(); // Refresh the list
+                                wishListController.refreshLoading();
                               }
                             } else {
-                               isSuccess = await addToWishListController.addToWishList(widget.productId);
+                              isSuccess = await addToWishListController
+                                  .addToWishList(widget.productId);
                               if (isSuccess) {
                                 showSnackBarMessage('Added to wish list');
-                                wishListController.getWishList(); // Refresh the list
+                                wishListController.refreshLoading();
                               }
                             }
-                            
+
                             if (!isSuccess) {
-                              showSnackBarMessage(addToWishListController.errorMessage ?? 'Action failed', true);
+                              showSnackBarMessage(
+                                addToWishListController.errorMessage ??
+                                    'Action failed',
+                                true,
+                              );
                             }
                           },
                           child: Card(
@@ -164,17 +175,21 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
                               child: Icon(
-                                isWishlisted ? Icons.favorite : Icons.favorite_border,
+                                isWishlisted
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
                                 size: 14,
-                                color: isWishlisted ? Colors.yellow[50] : Colors.white,
+                                color: isWishlisted
+                                    ? Colors.yellow[50]
+                                    : Colors.white,
                               ),
                             ),
                           ),
                         ),
                       );
-                    }
+                    },
                   );
-                }
+                },
               ),
             ],
           ),
@@ -201,6 +216,34 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           Text(
             controller.product.description,
             style: TextStyle(color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 30),
+          Text(
+            'Reviews',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 20,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: Icon(Icons.person_outline),
+                title: Text(
+                  'Bhadan paul',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -253,7 +296,8 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                   replacement: const CenterCircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: () async {
-                      if (AuthController.token == null) {
+                      if (AuthController.token == null || AuthController.token!.isEmpty) {
+                        showSnackBarMessage('Please sign in to add products to your cart', true);
                         Get.toNamed(SignInScreen.name);
                         return;
                       }
@@ -266,23 +310,25 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                         return;
                       }
 
-                      bool isSuccess = await _productAddToCartController.addToCart(
-                        _productDetailsController.product.id,
-                        _selectedColor!,
-                        _selectedSize!,
-                        _quantity,
-                      );
+                      bool isSuccess = await _productAddToCartController
+                          .addToCart(
+                            _productDetailsController.product.id,
+                            _selectedColor ?? '',
+                            _selectedSize ?? '',
+                            _quantity,
+                          );
                       if (isSuccess) {
                         showSnackBarMessage('Product Added To Cart');
                       } else {
                         showSnackBarMessage(
-                            controller.errorMessage ?? 'Something went wrong');
+                          controller.errorMessage ?? 'Something went wrong',
+                        );
                       }
                     },
                     child: const Text('Add to Cart'),
                   ),
                 );
-              }
+              },
             ),
           ),
         ],

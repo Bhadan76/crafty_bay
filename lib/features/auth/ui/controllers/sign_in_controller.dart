@@ -19,23 +19,19 @@ class SignInController extends GetxController{
    final NetworkResponse response = await Get.find<NetworkCaller>().postRequest(url: AppUrls.signInUrl,body: signInModel.toJson());
    if(response.isSuccess){
      final data = response.responseData;
-     String? accessToken;
+     String? accessToken = data['token'] ?? (data['data'] != null ? data['data']['token'] : null);
      UserModel? userModel;
-     
-     if (data['token'] != null) {
-       accessToken = data['token'];
-       userModel = UserModel.fromJson(data['data'] ?? {});
-     } else if (data['data'] != null && data['data'] is Map) {
-       accessToken = data['data']['token'];
-       userModel = UserModel.fromJson(data['data']['user'] ?? data['data']);
+     if (data['data'] != null) {
+       userModel = UserModel.fromJson(data['data']);
+     } else {
+       userModel = UserModel.fromJson(data);
      }
-
-     if (accessToken != null && userModel != null) {
+     if (accessToken != null) {
        await AuthController.saveUserData(accessToken, userModel);
        isSuccess = true;
        _errorMessage = null;
      } else {
-       _errorMessage = 'Invalid response format';
+       _errorMessage = 'Invalid response: token not found';
      }
    }else{
      _errorMessage = response.errorMessage;

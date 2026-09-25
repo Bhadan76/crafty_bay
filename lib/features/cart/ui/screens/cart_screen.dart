@@ -1,13 +1,12 @@
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
+import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
+import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:crafty_bay/features/cart/data/model/cart_item_model.dart';
 import 'package:crafty_bay/features/cart/ui/controller/cart_item_controller.dart';
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/products/widget/increment_decrement_count_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:get/get.dart';
 
 import '../../../../app/app_colors.dart';
 import '../../../common/controllers/main_bottom_nav_bar_controller.dart';
@@ -29,6 +28,12 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (AuthController.token == null || AuthController.token!.isEmpty) {
+        // লগইন না থাকলে SignIn screen এ পাঠাবো
+        Get.toNamed(SignInScreen.name);
+        Get.find<MainBottomNavBarController>().backToHome();
+        return;
+      }
       Get.find<CartItemController>().getCartList();
     });
   }
@@ -52,11 +57,12 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
       body: GetBuilder<CartItemController>(builder: (controller) {
-        if (controller.inProgress == false && controller.cartList.isEmpty) {
+        // Show the spinner *while* loading, not when we are sitting idle.
+        if (controller.inProgress && controller.cartList.isEmpty) {
           return const CenterCircularProgressIndicator();
         }
 
-        if (controller.cartList.isEmpty) {
+        if (controller.cartList.isEmpty ) {
           return const Center(child: Text('Your cart is empty'));
         }
 
