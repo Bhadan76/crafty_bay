@@ -36,6 +36,13 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Enable multidex for better memory management on older devices
+        multiDexEnabled = true
+
+        // Reduce app size by enabling resource shrinking at build time
+        // This removes unused resources from the final APK
+        resourceConfigurations += setOf("en", "bn")
     }
 
     kotlinOptions {
@@ -45,10 +52,21 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("customDebug")
+            // Enable code shrinking for debug builds to catch issues early
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
 
         release {
             signingConfig = signingConfigs.getByName("customDebug")
+            // Enable code and resource shrinking for release builds
+            isMinifyEnabled = true
+            isShrinkResources = true
+            // ProGuard rules for further optimization
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }
