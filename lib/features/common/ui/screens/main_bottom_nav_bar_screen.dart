@@ -42,7 +42,16 @@ class _MainBottomNavBarScreenState extends State<MainBottomNavBarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<MainBottomNavBarController>(
-        builder: (controller) => _screens[controller.selectedIndex],
+        builder: (controller) => Stack(
+          children: [
+            Offstage(
+              offstage: controller.selectedIndex != 0,
+              child: _screens[0],
+            ),
+            if (controller.selectedIndex != 0)
+              _screens[controller.selectedIndex],
+          ],
+        ),
       ),
       bottomNavigationBar: GetBuilder<MainBottomNavBarController>(
         builder: (controller) =>

@@ -1,7 +1,8 @@
+import 'package:crafty_bay/features/admin/ui/screens/admin_dashboard_screen.dart';
+import 'package:crafty_bay/features/auth/ui/controllers/auth_controller.dart';
 import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_bar_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import '../../../../app/app_configs.dart';
 import '../../../../core/extensions/localization_extension.dart';
 import '../widget/app_logo_widget.dart';
@@ -23,6 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 3));
+
+    // ✅ FIX: Saved user data theke role check kori (backend is source of truth).
+    // SharedPreferences-e user data save thake main() er
+    // await AuthController.getUserData() call er through.
+    final String role =
+        (AuthController.user?.role ?? 'user').toString().trim().toLowerCase();
+
+    if (role == 'admin') {
+      Get.offAllNamed(AdminDashboardScreen.name);
+      return;
+    }
+
     Get.offAllNamed(MainBottomNavBarScreen.name);
   }
   @override

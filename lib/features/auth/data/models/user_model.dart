@@ -6,6 +6,7 @@ class UserModel {
   final String mobile;
   final String city;
   final String? photo;
+  final String role;
 
   String get fullName {
     return '$firstName $lastName';
@@ -17,7 +18,9 @@ class UserModel {
     required this.lastName,
     required this.email,
     required this.mobile,
-    required this.city, this.photo,
+    required this.city,
+    this.photo,
+    this.role = 'user',
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +32,7 @@ class UserModel {
       mobile: (json['mobile'] ?? '').toString(),
       city: (json['city'] ?? '').toString(),
       photo: (json['photo'] ?? json['photoURL'] ?? json['picture'])?.toString(),
+      role: (json['role'] ?? 'user').toString(),
     );
   }
 
@@ -40,6 +44,7 @@ class UserModel {
     String? mobile,
     String? city,
     String? photo,
+    String? role,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -49,6 +54,7 @@ class UserModel {
       mobile: mobile ?? this.mobile,
       city: city ?? this.city,
       photo: photo ?? this.photo,
+      role: role ?? this.role,
     );
   }
 
@@ -62,6 +68,7 @@ class UserModel {
       'mobile': mobile,
       'city': city,
       'photo': photo,
+      'role': role,
     };
   }
 }

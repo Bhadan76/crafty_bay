@@ -1,3 +1,5 @@
+import 'package:crafty_bay/features/admin/ui/screens/admin_dashboard_screen.dart';
+import 'package:crafty_bay/features/admin/ui/controllers/admin_auth_controller.dart';
 import 'package:crafty_bay/features/auth/data/models/sign_in_model.dart';
 import 'package:crafty_bay/features/auth/ui/screens/sign_up_screen.dart';
 import 'package:email_validator/email_validator.dart';
@@ -34,6 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   SignInController signInController = Get.find<SignInController>();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final NetworkCaller networkCaller = Get.find<NetworkCaller>();
   bool _showPassword = false;
   bool _socialLoginInProgress = false;
 
@@ -220,10 +223,15 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _onTapFacebookLogin() async {
     try {
       final LoginResult result = await FacebookAuth.instance.login(
-        permissions: ['public_profile', 'email'],
+        permissions: ['public_profile'],
       );
 
       if (result.status == LoginStatus.success) {
+        // Facebook may return a limited or null access token if permissions
+        // were not granted; guard before dereferencing.
+        if (result.accessToken == null) {
+          throw 'Facebook access token is null';
+        }
         final OAuthCredential credential = FacebookAuthProvider.credential(
           result.accessToken!.tokenString,
         );
@@ -259,8 +267,6 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() => _socialLoginInProgress = true);
 
     try {
-      final String? firebaseIdToken = await fUser.getIdToken();
-
       final List<String> nameParts = (fUser.displayName ?? '')
           .split(' ')
           .where((String s) => s.isNotEmpty)
@@ -273,7 +279,7 @@ class _SignInScreenState extends State<SignInScreen> {
       String? accessToken;
       UserModel? userModel;
 
-      final NetworkCaller networkCaller = Get.find<NetworkCaller>();
+
 
       if (email.isNotEmpty) {
         // 1. Seamless token retrieval from CraftyBay backend via VerifyOtp
@@ -343,8 +349,7 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       }
 
-      // Fallback: If backend JWT is still null, fallback to firebaseIdToken
-      accessToken ??= firebaseIdToken;
+
 
       userModel ??= UserModel(
         id: fUser.uid,
@@ -360,9 +365,19 @@ class _SignInScreenState extends State<SignInScreen> {
           fUser.photoURL != null) {
         userModel = userModel.copyWith(photo: fUser.photoURL);
       }
+      debugPrint('========== SOCIAL LOGIN DEBUG ==========');
+      debugPrint('Firebase UID: ${fUser.uid}');
+      debugPrint('Email: $email');
+      debugPrint('Access Token exists: ${accessToken != null}');
+      debugPrint('Access Token length: ${accessToken?.length}');
+      debugPrint('Access Token: $accessToken');
+      debugPrint('========================================');
 
       if (accessToken != null && accessToken.isNotEmpty) {
         await AuthController.saveUserData(accessToken, userModel);
+        debugPrint(
+          'AuthController.token after save: ${AuthController.token}',
+        );
       }
 
       if (mounted) {
@@ -382,19 +397,33 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> signIn() async {
-    SignInModel signInModel = SignInModel(
-      email: _emailController.text.trim(),
-      password: _passwordController.text,
-    );
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text;
+
+    // ── Step 1: Backend login (backend is source of truth for role) ──
+    final SignInModel signInModel = SignInModel(email: email, password: password);
     final bool isSuccess = await signInController.signIn(signInModel);
-    if (isSuccess) {
-      _cleanFormFields();
-      Get.offAllNamed(MainBottomNavBarScreen.name);
-    } else {
+
+    if (!isSuccess) {
       showSnackBarMessage(
         signInController.errorMessage ?? 'Sign in failed',
         true,
       );
+      return;
+    }
+
+    _cleanFormFields();
+
+    // Route from the role returned by the backend login response.
+    final String role =
+        (AuthController.user?.role ?? '').toString().trim().toLowerCase();
+
+    if (role == 'admin') {
+      await Get.find<AdminAuthController>().checkAdminStatus();
+      Get.offAllNamed(AdminDashboardScreen.name);
+    } else {
+      // Regular customer
+      Get.offAllNamed(MainBottomNavBarScreen.name);
     }
   }
 

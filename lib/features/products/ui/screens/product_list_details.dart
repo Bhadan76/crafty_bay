@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../auth/ui/controllers/auth_controller.dart';
 import '../../../auth/ui/screens/sign_in_screen.dart';
+import '../controller/review_controller.dart';
 
 class ProductListDetails extends StatefulWidget {
   const ProductListDetails({super.key, required this.productId});
@@ -32,14 +33,18 @@ class _ProductListDetailsState extends State<ProductListDetails> {
       Get.find<ProductDetailsController>();
   final ProductAddToCartController _productAddToCartController =
       Get.find<ProductAddToCartController>();
+  final ReviewController _reviewController= Get.find<ReviewController>();
   String? _selectedColor;
   String? _selectedSize;
   int _quantity = 1;
+  bool _showAllReviews = false;
+  static const int _initialReviewCount = 2;
 
   @override
   void initState() {
     super.initState();
     _productDetailsController.getProductDetails(widget.productId);
+    _reviewController.getReviewDetails(widget.productId);
     if (AuthController.token != null) {
       Get.find<WishListController>().getWishList();
     }
@@ -57,20 +62,25 @@ class _ProductListDetailsState extends State<ProductListDetails> {
           if (controller.errorMessage != null) {
             return Center(child: Text(controller.errorMessage!));
           }
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                ProductDetailsCarouselSlider(
-                  imageList: controller.product.images,
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ProductDetailsCarouselSlider(
+                        imageList: controller.product.images,
+                      ),
+                      _buildProductDetails(controller),
+                    ],
+                  ),
                 ),
-                _buildProductDetails(controller),
-                SizedBox(height: 100.h),
-                _buildPriceAndAddToCartSection(
-                  controller.product.sizes.isNotEmpty,
-                  controller.product.colors.isNotEmpty,
-                ),
-              ],
-            ),
+              ),
+              _buildPriceAndAddToCartSection(
+                controller.product.sizes.isNotEmpty,
+                controller.product.colors.isNotEmpty,
+              ),
+            ],
           );
         },
       ),
@@ -95,6 +105,7 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                 ),
               ),
               IncrementDecrementCountWidget(
+                maxValue: controller.product.stock,
                 onChanged: (int value) {
                   _quantity = value;
                 },
@@ -227,21 +238,107 @@ class _ProductListDetailsState extends State<ProductListDetails> {
             ),
           ),
           const SizedBox(height: 20),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: Icon(Icons.person_outline),
-                title: Text(
-                  'Bhadan paul',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                  style: TextStyle(color: Colors.grey.shade600),
-                ),
+          GetBuilder<ReviewController>(
+            builder: (controller) {
+              if (controller.inProgress) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: CenterCircularProgressIndicator(),
+                );
+              }
+              if (controller.errorMessage != null) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      controller.errorMessage!,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ),
+                );
+              }
+              if (controller.reviewList.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Center(
+                    child: Text(
+                      'No reviews yet',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ),
+                );
+              }
+              final reviews = controller.reviewList;
+              final visibleCount = _showAllReviews || reviews.length <= _initialReviewCount
+                  ? reviews.length
+                  : _initialReviewCount;
+              final hiddenCount = reviews.length - visibleCount;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: visibleCount,
+                    itemBuilder: (context, index) {
+                      final review = reviews[index];
+                      final user = review.user;
+                      final fullName =
+                          '${user.firstName} ${user.lastName}'.trim();
+                      final ratingValue =
+                          double.tryParse(review.rating) ?? 0.0;
+                      return ListTile(
+                        leading: const Icon(Icons.person_outline),
+                        title: Text(
+                          fullName.isEmpty ? 'Anonymous' : fullName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _buildRatingStars(ratingValue),
+                            const SizedBox(height: 4),
+                            Text(
+                              review.description,
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              _formatDate(review.createdAt),
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  if (hiddenCount > 0)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          onPressed: () {
+                            setState(() => _showAllReviews = true);
+                          },
+                          child: Text(
+                            'See More ($hiddenCount)',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               );
             },
           ),
@@ -296,6 +393,9 @@ class _ProductListDetailsState extends State<ProductListDetails> {
                   replacement: const CenterCircularProgressIndicator(),
                   child: ElevatedButton(
                     onPressed: () async {
+                      debugPrint(
+                        'Add To Cart token = ${AuthController.token}',
+                      );
                       if (AuthController.token == null || AuthController.token!.isEmpty) {
                         showSnackBarMessage('Please sign in to add products to your cart', true);
                         Get.toNamed(SignInScreen.name);
@@ -334,5 +434,34 @@ class _ProductListDetailsState extends State<ProductListDetails> {
         ],
       ),
     );
+  }
+
+  /// 5-star row with fractional fill (e.g. 4.5 ⇒ 4 full + 1 half).
+  Widget _buildRatingStars(double rating) {
+    final fullStars = rating.floor();
+    final hasHalf = (rating - fullStars) >= 0.5;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (i) {
+        IconData icon;
+        if (i < fullStars) {
+          icon = Icons.star;
+        } else if (i == fullStars && hasHalf) {
+          icon = Icons.star_half;
+        } else {
+          icon = Icons.star_border;
+        }
+        return Icon(icon, size: 16, color: Colors.orange);
+      }),
+    );
+  }
+
+  /// "2026-09-25T16:37:22.912Z" → "25 Sep 2026".
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }

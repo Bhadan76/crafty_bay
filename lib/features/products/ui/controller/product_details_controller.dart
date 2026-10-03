@@ -13,7 +13,17 @@ class ProductDetailsController extends GetxController {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
   ProductListModel? _product;
+
+  /// Non-null accessor — call sites must guard with `inProgress`
+  /// (product_list_details.dart does this in its GetBuilder).
   ProductListModel get product => _product!;
+
+  /// Safe stock accessor for widgets that don't have the inProgress
+  /// guard (e.g. IncrementDecrementCountWidget used inside the cart
+  /// screen, where ProductDetailsController is not the source of truth).
+  /// Returns 0 while product is null so callers can fall back to "no
+  /// upper limit" semantics if they prefer.
+  int get currentStock => _product?.stock ?? 0;
 
   Future<bool> getProductDetails(String productId) async{
     bool isSuccess = false;

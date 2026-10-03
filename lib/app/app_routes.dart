@@ -2,10 +2,11 @@ import 'package:crafty_bay/features/cart/ui/screens/cart_screen.dart';
 import 'package:crafty_bay/features/cart/ui/screens/payment_gateway_screen.dart';
 import 'package:crafty_bay/features/common/data/model/category_model.dart';
 import 'package:crafty_bay/features/common/ui/screens/search_screen.dart';
-import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
+import 'package:crafty_bay/features/profile/ui/screen/profile_screen.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list.dart';
 import 'package:crafty_bay/features/products/ui/screens/product_list_details.dart';
 import 'package:crafty_bay/features/common/ui/screens/notification_screen.dart';
+import 'package:crafty_bay/features/profile/ui/screen/my_orders_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../features/auth/ui/screens/otp_verify_screen.dart';
@@ -14,11 +15,11 @@ import '../features/auth/ui/screens/sign_up_screen.dart';
 import '../features/auth/ui/screens/splash_screen.dart';
 import '../features/common/ui/screens/main_bottom_nav_bar_screen.dart';
 import '../features/reviews/ui/screen/create_reviews_screen.dart';
-import '../features/reviews/ui/screen/reviews_screen.dart';
-
 import 'package:get/get.dart';
 
 import 'package:crafty_bay/features/home/ui/screens/customer_care_chat_screen.dart';
+
+import 'package:crafty_bay/features/admin/ui/screens/admin_dashboard_screen.dart';
 
 class AppRoutes {
   static List<GetPage> getPages = [
@@ -61,7 +62,6 @@ class AppRoutes {
         return PaymentGatewayScreen(totalAmount: totalAmount);
       },
     ),
-    GetPage(name: ReviewsScreen.name, page: () => const ReviewsScreen()),
     GetPage(name: SearchScreen.name, page: () => const SearchScreen()),
     GetPage(name: ProfileScreen.name, page: () => const ProfileScreen()),
     GetPage(
@@ -69,6 +69,8 @@ class AppRoutes {
       page: () => const CustomerCareChatScreen(),
     ),
     GetPage(name: NotificationScreen.name, page: () => const NotificationScreen()),
+    GetPage(name: MyOrdersScreen.name, page: () => const MyOrdersScreen()),
+    GetPage(name: AdminDashboardScreen.name, page: () => const AdminDashboardScreen()),
   ];
 
   static Route<dynamic> routes(RouteSettings settings) {
@@ -97,8 +99,6 @@ class AppRoutes {
           ? settings.arguments as String
           : '';
       route = ProductListDetails(productId: productId);
-    } else if (settings.name == ReviewsScreen.name) {
-      route = const ReviewsScreen();
     } else if (settings.name == CreateReviewsScreen.name) {
       route = const CreateReviewsScreen();
     } else if (settings.name == PaymentGatewayScreen.name) {
@@ -114,6 +114,10 @@ class AppRoutes {
       route = const CustomerCareChatScreen();
     } else if (settings.name == NotificationScreen.name) {
       route = const NotificationScreen();
+    } else if (settings.name == MyOrdersScreen.name) {
+      route = const MyOrdersScreen();
+    } else if (settings.name == AdminDashboardScreen.name) {
+      route = const AdminDashboardScreen();
     } else {
       route = Scaffold(
         body: Center(child: Text('Route not found: ${settings.name}')),

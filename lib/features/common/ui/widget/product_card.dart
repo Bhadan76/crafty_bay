@@ -58,13 +58,18 @@ class ProductCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '\$${productListModel.price}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                        Flexible(
+                          child: Text(
+                            '\$${productListModel.price}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 4),
                         Wrap(
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
@@ -72,6 +77,7 @@ class ProductCard extends StatelessWidget {
                             Text(productListModel.rating, style: const TextStyle(fontSize: 12)),
                           ],
                         ),
+                        const SizedBox(width: 4),
                         Card(
                           color: AppColors.primary,
                           margin: EdgeInsets.zero,

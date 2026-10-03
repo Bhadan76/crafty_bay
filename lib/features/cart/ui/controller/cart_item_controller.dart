@@ -131,4 +131,11 @@ class CartItemController extends GetxController{
     update();
     return isSuccess;
   }
+
+  void clearCart() {
+    _cartList.clear();
+    _discountAmount = 0;
+    _appliedCoupon = null;
+    update();
+  }
 }

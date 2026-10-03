@@ -28,20 +28,17 @@ class NetworkCaller {
           if (token != null && token.isNotEmpty) {
             options.headers['token'] = token;
           }
-          _logger.i('Token => $token');
           handler.next(options);
-        },
-        onResponse: (response, handler) {
-          _logger.i('Response => ${response.data}');
-          handler.next(response);
         },
         onError: (error, handler) {
           if (error.response?.statusCode == 401) {
             final String path = error.requestOptions.path;
-            final bool isAuthRoute = path.contains('/UserLogin') ||
-                path.contains('/Signup') ||
-                path.contains('/VerifyOtp');
-            if (!isAuthRoute) {
+            final bool isAuthRoute = path.endsWith('/Login') ||
+                path.endsWith('/UserLogin') ||
+                path.endsWith('/Signup') ||
+                path.endsWith('/VerifyOtp');
+            final bool isAdminRoute = path.contains('/api/admin');
+            if (!isAuthRoute && !isAdminRoute) {
               onUnauthorized();
             }
           }
@@ -72,7 +69,7 @@ class NetworkCaller {
         errorMessage: (response.data is Map) ? response.data['message'] : null,
       );
     } on DioException catch (e) {
-      _logger.e(e.toString());
+      _logError(e);
 
       String? errorMessage;
       if (e.response?.data is Map) {
@@ -105,7 +102,7 @@ class NetworkCaller {
         errorMessage: (response.data is Map) ? response.data['message'] : null,
       );
     } on DioException catch (e) {
-      _logger.e(e.toString());
+      _logError(e);
 
       String? errorMessage;
       if (e.response?.data is Map) {
@@ -138,7 +135,7 @@ class NetworkCaller {
         errorMessage: (response.data is Map) ? response.data['message'] : null,
       );
     } on DioException catch (e) {
-      _logger.e(e.toString());
+      _logError(e);
 
       String? errorMessage;
       if (e.response?.data is Map) {
@@ -171,7 +168,7 @@ class NetworkCaller {
         errorMessage: (response.data is Map) ? response.data['message'] : null,
       );
     } on DioException catch (e) {
-      _logger.e(e.toString());
+      _logError(e);
 
       String? errorMessage;
       if (e.response?.data is Map) {
@@ -207,7 +204,7 @@ class NetworkCaller {
         errorMessage: (response.data is Map) ? response.data['message'] : null,
       );
     } on DioException catch (e) {
-      _logger.e(e.toString());
+      _logError(e);
 
       String? errorMessage;
       if (e.response?.data is Map) {
@@ -227,8 +224,17 @@ class NetworkCaller {
 
   void _logResponse(int statusCode, Response response) {
     _logger.i(
-      'Status Code => $statusCode\n'
-      'Response Body => ${response.data}',
+      'HTTP $statusCode ${response.requestOptions.method} '
+      '${response.requestOptions.path}',
+    );
+  }
+
+  void _logError(DioException error) {
+    _logger.e(
+      'HTTP request failed: ${error.requestOptions.method} '
+      '${error.requestOptions.path} '
+      '(status ${error.response?.statusCode ?? 'unavailable'}): '
+      '${error.message ?? 'unknown error'}',
     );
   }
 }

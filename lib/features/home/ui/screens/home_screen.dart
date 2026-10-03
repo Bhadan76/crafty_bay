@@ -1,6 +1,6 @@
 import 'package:crafty_bay/core/widgets/center_circular_progress_indicator.dart';
 import 'package:crafty_bay/features/common/controllers/category_controller.dart';
-import 'package:crafty_bay/features/home/ui/screens/profile_screen.dart';
+import 'package:crafty_bay/features/profile/ui/screen/profile_screen.dart';
 import 'package:crafty_bay/features/home/ui/screens/customer_care_chat_screen.dart';
 import 'package:crafty_bay/features/products/ui/controller/product_by_remark_controller.dart';
 import 'package:crafty_bay/features/common/controllers/notification_controller.dart';

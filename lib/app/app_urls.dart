@@ -1,6 +1,7 @@
 class AppUrls {
   static const String _baseUrl = 'https://crafty-bay-app-api.onrender.com';
   static const String signUpUrl = '$_baseUrl/Signup';
+  static const String adminSignInUrl = '$_baseUrl/Login';
   static const String signInUrl = '$_baseUrl/UserLogin';
   static const String otpVerifyUrl = '$_baseUrl/VerifyOtp';
   static const String sliderUrl = '$_baseUrl/ListProductSlider';
@@ -19,4 +20,20 @@ class AppUrls {
   static const String searchListUrl = '$_baseUrl/SearchProduct';
   static const String searchSuggestionsUrl = '$_baseUrl/SearchSuggestions';
   static String productByRemarkUrl(String remark) => '$_baseUrl/ListProductByRemark/$remark';
+  static String reviewUrl(String productId) => '$_baseUrl/ListReviewByProduct/$productId';
+
+  // ===================== Admin Panel APIs =====================
+  static const String adminDashboardSummaryUrl = '$_baseUrl/api/admin/dashboard-summary';
+  static const String adminProductsUrl = '$_baseUrl/api/admin/products';
+  static String adminProductByIdUrl(String id) => '$_baseUrl/api/admin/products/$id';
+  static const String adminCategoriesUrl = '$_baseUrl/api/admin/categories';
+  static String adminCategoryByIdUrl(String id) => '$_baseUrl/api/admin/categories/$id';
+  static const String adminOrdersUrl = '$_baseUrl/api/admin/orders';
+  static String adminOrderStatusUrl(String id) => '$_baseUrl/api/admin/orders/$id/status';
+  static String adminOrderByIdUrl(String id) => '$_baseUrl/api/admin/orders/$id';
+  static const String adminUsersUrl = '$_baseUrl/api/admin/users';
+  static String adminUserByIdUrl(String id) => '$_baseUrl/api/admin/users/$id';
+  static String adminUserBlockUrl(String id) => '$_baseUrl/api/admin/users/$id/block';
+  static const String adminReviewsUrl = '$_baseUrl/api/admin/reviews';
+  static String adminReviewByIdUrl(String id) => '$_baseUrl/api/admin/reviews/$id';
 }

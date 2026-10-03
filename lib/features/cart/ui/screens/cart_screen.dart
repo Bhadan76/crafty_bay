@@ -238,6 +238,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                       IncrementDecrementCountWidget(
                         initialValue: cartItem.quantity,
+                        maxValue: cartItem.productListModel?.stock,
                         onChanged: (int value) {
                           Get.find<CartItemController>().changeQuantity(index, value);
                         },
@@ -323,6 +324,5 @@ class _CartScreenState extends State<CartScreen> {
       ),
     );
   }
-
 }
 

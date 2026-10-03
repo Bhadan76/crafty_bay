@@ -7,6 +7,7 @@ import 'package:crafty_bay/features/auth/ui/screens/sign_in_screen.dart';
 import 'package:crafty_bay/features/cart/ui/controller/cart_item_controller.dart';
 import 'package:crafty_bay/features/common/controllers/main_bottom_nav_bar_controller.dart';
 import 'package:crafty_bay/features/common/ui/screens/main_bottom_nav_bar_screen.dart';
+import 'package:crafty_bay/features/profile/ui/screen/my_orders_screen.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -772,10 +773,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: const Color(0xffFFA500),
               onTap: () {
                 if (_isLoggedIn) {
-                  if (Get.isRegistered<MainBottomNavBarController>()) {
-                    Get.find<MainBottomNavBarController>().changeIndex(2);
-                    Get.back();
-                  }
+                  Get.toNamed(MyOrdersScreen.name);
                 } else {
                   _promptSignIn();
                 }
