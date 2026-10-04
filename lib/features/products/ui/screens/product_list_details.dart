@@ -10,11 +10,12 @@ import 'package:crafty_bay/features/products/widget/size_picker_widget.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/add_to_wish_list_controller.dart';
 import 'package:crafty_bay/features/wish_list/ui/controller/wish_list_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 
 import '../../../auth/ui/controllers/auth_controller.dart';
 import '../../../auth/ui/screens/sign_in_screen.dart';
+import '../../../reviews/ui/screen/create_reviews_screen.dart';
 import '../controller/review_controller.dart';
 
 class ProductListDetails extends StatefulWidget {
@@ -44,11 +45,12 @@ class _ProductListDetailsState extends State<ProductListDetails> {
   void initState() {
     super.initState();
     _productDetailsController.getProductDetails(widget.productId);
-    _reviewController.getReviewDetails(widget.productId);
+    _reviewController.refreshLoading(widget.productId);
     if (AuthController.token != null) {
       Get.find<WishListController>().getWishList();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -229,14 +231,52 @@ class _ProductListDetailsState extends State<ProductListDetails> {
             style: TextStyle(color: Colors.grey.shade600),
           ),
           const SizedBox(height: 30),
-          Text(
-            'Reviews',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontSize: 20,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  if (AuthController.token == null || AuthController.token!.isEmpty) {
+                    showSnackBarMessage('Please sign in to write a review', true);
+                    Get.toNamed(SignInScreen.name);
+                    return;
+                  }
+                  final result = await Get.toNamed(
+                    CreateReviewsScreen.name,
+                    arguments: {
+                      'productId': widget.productId,
+                      'productTitle': controller.product.title,
+                      'productImage': controller.product.images.isNotEmpty ? controller.product.images.first : '',
+                    },
+                  );
+                  if (result == true) {
+                    _reviewController.refreshLoading(widget.productId);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                icon: const Icon(Icons.rate_review, size: 16, color: Colors.white),
+                label: const Text(
+                  'Add Review',
+                  style: TextStyle(color: Colors.white, fontSize: 13),
+                ),
+              ),
+            ],
           ),
+
           const SizedBox(height: 20),
           GetBuilder<ReviewController>(
             builder: (controller) {

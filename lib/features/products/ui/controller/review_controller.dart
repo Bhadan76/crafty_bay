@@ -12,6 +12,7 @@ class ReviewController extends GetxController {
   final int _countData = 10;
   int _currentPage = 1;
   int? _totalPages;
+  String? _lastProductId;
 
   String? _errorMessage;
   final List<ReviewModel> _reviewList = [];
@@ -22,6 +23,14 @@ class ReviewController extends GetxController {
   List<ReviewModel> get reviewList => _reviewList;
 
   Future<bool> getReviewDetails(String productId) async {
+    // Reset state if product ID changes
+    if (_lastProductId != productId) {
+      _lastProductId = productId;
+      _currentPage = 1;
+      _totalPages = null;
+      _reviewList.clear();
+    }
+
     // Stop if we already loaded all pages
     if (_totalPages != null && _currentPage > _totalPages!) {
       _logger.i('All review pages already loaded. Skip.');
@@ -36,7 +45,7 @@ class ReviewController extends GetxController {
 
     if (_currentPage == 1) {
       _inProgress = true;
-      _reviewList.clear(); // নতুন প্রোডাক্ট লোড করার আগে আগের রিভিউ ক্লিয়ার করা হচ্ছে
+      _reviewList.clear();
     } else {
       _isLoadingMore = true;
     }
@@ -61,23 +70,36 @@ class ReviewController extends GetxController {
       final data = response.responseData;
       _logger.i('🟢 [Review API] Raw response data: $data');
 
-      if (data != null && data['data'] != null) {
-        final rawList = data['data'] as List<dynamic>;
+      List<dynamic> rawList = [];
+      if (data is List) {
+        rawList = data;
+      } else if (data is Map) {
+        if (data['data'] is List) {
+          rawList = data['data'] as List<dynamic>;
+        } else if (data['reviews'] is List) {
+          rawList = data['reviews'] as List<dynamic>;
+        }
+      }
+
+      if (rawList.isNotEmpty) {
         _logger.i('🟢 [Review API] Parsed ${rawList.length} review(s).');
 
-        for (Map<String, dynamic> item in rawList.cast<Map<String, dynamic>>()) {
-          _reviewList.add(ReviewModel.formJson(item));
+        for (var item in rawList) {
+          if (item is Map<String, dynamic>) {
+            _reviewList.add(ReviewModel.formJson(item));
+          } else if (item is Map) {
+            _reviewList.add(ReviewModel.formJson(Map<String, dynamic>.from(item)));
+          }
         }
-        // Parsing pagination data
-        if (data['pagination'] != null) {
-          _totalPages = data['pagination']['totalPages'];
-          _logger.i('🟢 [Review API] Pagination → totalPages: $_totalPages');
-        }
-        _currentPage++;
-        _logger.i('🟢 [Review API] Internal list size now: ${_reviewList.length}');
-      } else {
-        _logger.w('🟠 [Review API] Response had no "data" key. Full body: $data');
       }
+
+      if (data is Map && data['pagination'] != null) {
+        _totalPages = data['pagination']['totalPages'];
+        _logger.i('🟢 [Review API] Pagination → totalPages: $_totalPages');
+      }
+
+      _currentPage++;
+      _logger.i('🟢 [Review API] Internal list size now: ${_reviewList.length}');
       _errorMessage = null;
       isSuccess = true;
     } else {
@@ -94,8 +116,10 @@ class ReviewController extends GetxController {
   Future<bool> refreshLoading(String productId) {
     _logger.i('🔄 [Review API] Refresh triggered for product: $productId');
     _currentPage = 1;
+    _lastProductId = productId;
     _reviewList.clear();
     _totalPages = null;
     return getReviewDetails(productId);
   }
 }
+

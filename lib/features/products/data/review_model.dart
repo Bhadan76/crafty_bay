@@ -24,18 +24,27 @@ class ReviewModel {
     required this.rating,
     required this.createdAt,
   });
-  factory ReviewModel.formJson(Map<String,dynamic> jsonData){
+
+  factory ReviewModel.formJson(Map<String, dynamic> jsonData) {
     return ReviewModel(
-      productId: jsonData['product_id'],
-      user: UserDataModel.formJson(jsonData['user']),
-      description: jsonData['description'],
-      rating: jsonData['rating'],
-      createdAt: DateTime.parse(jsonData['createdAt']),
+      productId: jsonData['product_id']?.toString() ?? jsonData['productId']?.toString() ?? '',
+      user: jsonData['user'] != null && jsonData['user'] is Map<String, dynamic>
+          ? UserDataModel.formJson(jsonData['user'])
+          : UserDataModel(
+              id: jsonData['_id']?.toString() ?? '',
+              firstName: jsonData['firstName']?.toString() ?? jsonData['customerName']?.toString() ?? 'User',
+              lastName: jsonData['lastName']?.toString() ?? '',
+            ),
+      description: jsonData['description']?.toString() ?? jsonData['comment']?.toString() ?? '',
+      rating: jsonData['rating']?.toString() ?? '5',
+      createdAt: jsonData['createdAt'] != null
+          ? (DateTime.tryParse(jsonData['createdAt'].toString()) ?? DateTime.now())
+          : DateTime.now(),
     );
   }
 }
 
-class UserDataModel{
+class UserDataModel {
   final String id;
   final String firstName;
   final String lastName;
@@ -47,6 +56,11 @@ class UserDataModel{
   });
 
   factory UserDataModel.formJson(Map<String, dynamic> jsonData) {
-    return UserDataModel(id: jsonData['_id'], firstName: jsonData['firstName'], lastName: jsonData['lastName']);
+    return UserDataModel(
+      id: jsonData['_id']?.toString() ?? jsonData['id']?.toString() ?? '',
+      firstName: jsonData['firstName']?.toString() ?? jsonData['first_name']?.toString() ?? '',
+      lastName: jsonData['lastName']?.toString() ?? jsonData['last_name']?.toString() ?? '',
+    );
   }
 }
+

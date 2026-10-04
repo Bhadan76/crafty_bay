@@ -100,7 +100,19 @@ class AppRoutes {
           : '';
       route = ProductListDetails(productId: productId);
     } else if (settings.name == CreateReviewsScreen.name) {
-      route = const CreateReviewsScreen();
+      final dynamic args = settings.arguments;
+      if (args is Map<String, dynamic>) {
+        route = CreateReviewsScreen(
+          productId: args['productId'],
+          productTitle: args['productTitle'],
+          productImage: args['productImage'],
+        );
+      } else if (args is String) {
+        route = CreateReviewsScreen(productId: args);
+      } else {
+        route = const CreateReviewsScreen();
+      }
+
     } else if (settings.name == PaymentGatewayScreen.name) {
       final double totalAmount = (settings.arguments is double)
           ? settings.arguments as double

@@ -21,6 +21,8 @@ class AppUrls {
   static const String searchSuggestionsUrl = '$_baseUrl/SearchSuggestions';
   static String productByRemarkUrl(String remark) => '$_baseUrl/ListProductByRemark/$remark';
   static String reviewUrl(String productId) => '$_baseUrl/ListReviewByProduct/$productId';
+  static const String createReviewUrl = '$_baseUrl/CreateProductReview';
+  static const String createReviewAltUrl = '$_baseUrl/CreateReview';
 
   // ===================== Admin Panel APIs =====================
   static const String adminDashboardSummaryUrl = '$_baseUrl/api/admin/dashboard-summary';

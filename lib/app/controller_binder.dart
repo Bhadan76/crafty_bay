@@ -29,6 +29,8 @@ import 'package:crafty_bay/features/admin/ui/controllers/admin_order_controller.
 import 'package:crafty_bay/features/admin/ui/controllers/admin_review_controller.dart';
 import 'package:crafty_bay/features/admin/ui/controllers/admin_user_controller.dart';
 
+import 'package:crafty_bay/features/reviews/ui/controller/create_review_controller.dart';
+
 class ControllerBinder extends Bindings {
   @override
   void dependencies() {
@@ -59,6 +61,8 @@ class ControllerBinder extends Bindings {
     Get.lazyPut(() => custom_search.SearchController(), fenix: true);
     Get.lazyPut(() => NotificationController(), fenix: true);
     Get.lazyPut(() => ReviewController(), fenix: true);
+    Get.lazyPut(() => CreateReviewController(), fenix: true);
     Get.lazyPut(() => OrderController(), fenix: true);
   }
 }
+
